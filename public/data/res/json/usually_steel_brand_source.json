@@ -1,0 +1,35 @@
+{
+	"brandsource":[
+		{"brand":"韶钢","price_source":"广东韶钢松山股份有限公司"},
+		{"brand":"韶钢","price_source":"广东韶钢海工新材料有限公司"},
+		{"brand":"粤钢","price_source":"珠海粤裕丰钢铁有限公司"},
+		{"brand":"粤钢","price_source":"广东晨华贸易有限公司"},
+		{"brand":"粤钢","price_source":"广东中拓物产供应链管理有限公司"},
+		{"brand":"广钢","price_source":"广州广钢利通建材科技有限公司"},
+		{"brand":"广钢","price_source":"上海找钢网信息科技股份有限公司"},
+		{"brand":"广钢","price_source":"广东省建材有限公司"},
+		{"brand":"广钢","price_source":"广东广物供应链管理有限公司"},
+		{"brand":"湘钢","price_source":"广州扬帆钢铁贸易有限公司"},
+		{"brand":"湘钢","price_source":"广州市程海贸易有限公司"},
+		{"brand":"湘钢","price_source":"上海找钢网信息科技股份有限公司"},
+		{"brand":"湘钢","price_source":"佛山市南海乐居商贸有限公司"},
+		{"brand":"柳钢","price_source":"佛山市南海乐居商贸有限公司"},
+		{"brand":"华美","price_source":"深圳市华美盛业投资发展有限公司"},
+		{"brand":"新抚钢","price_source":"广州启润实业有限公司"},
+		{"brand":"萍钢","price_source":"广州金博物流贸易集团有限公司"},
+		{"brand":"萍钢","price_source":"苏州裕景泰贸易有限公司广州分公司"},
+		{"brand":"萍钢","price_source":"广州广萍钢铁贸易有限公司"},
+		{"brand":"三钢闽光","price_source":"广州启润实业有限公司"},
+		{"brand":"桂万钢","price_source":"广州启润实业有限公司"},
+		{"brand":"桂万钢","price_source":"广西富兴隆国际贸易有限公司"},
+		{"brand":"桂万钢","price_source":"广州点钢资源有限公司"},
+		{"brand":"冷钢","price_source":"广州启润实业有限公司"},
+		{"brand":"冷钢","price_source":"广州扬帆钢铁贸易有限公司"},
+		{"brand":"宣钢","price_source":"广东广物物资有限公司"},
+		{"brand":"沙钢","price_source":"上海瑞冶联实业有限公司"},
+		{"brand":"沙钢","price_source":"广州市三钞贸易有限公司"},
+		{"brand":"涟钢","price_source":"上海找钢网信息科技股份有限公司"},
+		{"brand":"涟钢","price_source":"广州市宗钢物资有限公司"}
+	]
+	
+}

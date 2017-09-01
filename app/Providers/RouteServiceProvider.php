@@ -1,0 +1,128 @@
+<?php
+
+namespace App\Providers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+
+class RouteServiceProvider extends ServiceProvider
+{
+    /**
+     * This namespace is applied to your controller routes.
+     *
+     * In addition, it is set as the URL generator's root namespace.
+     *
+     * @var string
+     */
+    protected $namespace = 'App\Http\Controllers';
+
+    /**
+     * Define your route model bindings, pattern filters, etc.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        //
+
+        parent::boot();
+    }
+
+    /**
+     * Define the routes for the application.
+     *
+     * @return void
+     */
+    public function map()
+    {
+        $this->mapWebRoutes();
+
+        $this->mapApiRoutes();
+
+         $this->mapAdminRoutes();
+
+         $this->mapWebPriceRoutes();
+
+         $this->mapDingoApiRoutes();
+
+         $this->mapLoginRoutes();
+
+        //
+    }
+
+    /**
+     * Define the "web" routes for the application.
+     *
+     * These routes all receive session state, CSRF protection, etc.
+     *
+     * @return void
+     */
+    protected function mapWebRoutes()
+    {
+        Route::group([
+            'middleware' => [ 'web' ,'isLogin'],
+            'namespace' => $this->namespace,
+        ], function ($router) {
+            require base_path('routes/web.php');
+        });
+    }
+
+    /**
+     * Define the "api" routes for the application.
+     *
+     * These routes are typically stateless.
+     *
+     * @return void
+     */
+    protected function mapApiRoutes()
+    {
+        Route::group([
+            'middleware' => ['web'],
+            'namespace' => $this->namespace,
+            'prefix' => 'api',
+        ], function ($router) {
+            require base_path('routes/api.php');
+        });
+        // dd(1);
+    }
+
+    protected function mapAdminRoutes()
+    {
+        Route::group([
+            'middleware' => ['web','auth'],
+            'namespace' => $this->namespace.'\Admin',
+            'prefix' => 'admin',
+        ], function ($router) {
+            require base_path('routes/admin.php');
+        });
+    }
+
+    protected function mapWebPriceRoutes()
+    {
+        Route::group([
+            'namespace' => $this->namespace,
+            'prefix' => 'api',
+        ], function ($router) {
+            require base_path('routes/mapWebPriceRoutes.php');
+        });
+    }
+
+    public function mapDingoApiRoutes(){
+        Route::group([
+            'namespace' => $this->namespace,
+            'prefix' => 'dingoapi',
+        ], function ($router) {
+            require base_path('routes/dingoApiRoutes.php');
+        });
+    }
+
+    public function mapLoginRoutes(){
+        Route::group([
+            'middleware' => 'web',
+            'namespace' => $this->namespace
+        ], function ($router) {
+            require base_path('routes/login.php');
+        });
+    }
+
+}
