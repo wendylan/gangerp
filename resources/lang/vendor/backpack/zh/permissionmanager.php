@@ -38,7 +38,7 @@ return [
     'user'                   =>'用户',
     'name'                   =>'姓名',
     'email'                  =>'邮箱',
-    'email'                  =>'邮箱',
+    'mobile'                  =>'手机号码',
     'email'                  =>'邮箱',
     'roles'                  =>'角色',
     'role'                   =>'角色',

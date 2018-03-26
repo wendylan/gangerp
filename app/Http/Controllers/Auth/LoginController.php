@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-// use Auth;
+use Auth;
 
 class LoginController extends Controller
 {
@@ -27,7 +27,8 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/companyInfo';
+
 
     /**
      * Create a new controller instance.
@@ -113,15 +114,13 @@ class LoginController extends Controller
 
 
     protected function authenticated(Request $request, $user)
-    {
+    {   
         if ($user->hasRole('bidder')) {
             return redirect('/bidder/my');
         }else if ($user->hasRole('次终端用户')) {
-            return redirect('/secondaryTerminal');
+            return redirect($this->rolePermissionRedirect( $user, '次终端用户' ));
         }else if ($user->hasRole('终端用户')) {
-            return redirect('/webprice');
-        }else if ($user->hasRole('运营中心')) {
-            return redirect('/salesOrder');
+            return redirect($this->rolePermissionRedirect( $user, '终端用户' ));
         }else if ($user->hasRole('tenderee')) {
             return redirect('/tenderee/my');
         }else if($user->hasRole('admin')){
@@ -130,13 +129,53 @@ class LoginController extends Controller
             return redirect('admin/steel_brands');
         }else if($user->hasRole('前台数据管理员')){
             return redirect('dataManage');
+        }else if($user->roles->isEmpty()){
+            return redirect('signCompany');
         }else {
             return redirect('/');
         }
     }
 
 
+    protected function rolePermissionRedirect($user,$role_name){
+        $permissions = $user->permissions;
+        $url_info = config('user_permission_redirect_map.redirectMap');
+        foreach ($url_info as $role_key => $role) {
+            if($role['role'] == $role_name){
+                foreach ($role['permissions_and_router'] as $map_key => $map) {
+                    foreach ($permissions as $key => $value) {
+                        if($value->name == $map['name']){
+                            return $map['url'];
+                        }
+                    }
+                }
+            }
+        }
+        return $this->redirectTo;
+    }
 
+    /**
+     * Send the response after the user was authenticated.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    protected function sendLoginResponse(Request $request)
+    {
+        $request->session()->regenerate();
+        $previous_session = Auth::User()->session_id;
+        if ($previous_session) {
+            \Session::getHandler()->destroy($previous_session);
+        }
+    
+        Auth::user()->session_id = \Session::getId();
+        Auth::user()->save();
+
+        $this->clearLoginAttempts($request);
+
+        return $this->authenticated($request, $this->guard()->user())
+                ?: redirect()->intended($this->redirectPath());
+    }
 
 
 }

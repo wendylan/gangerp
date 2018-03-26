@@ -86,7 +86,7 @@ class BidsController extends Controller {
            return View('bids.create', ['companys' =>  $companys,'brands' =>  $brands,'myprojects' =>  $myprojects,'q_request' =>  $q_request,'pay_type' =>  $pay_type,'cats' =>  $tree]);
 
         } else {
-            return View('bids.create_project', ['companys' =>  $companys,'brands' =>  $brands,'myprojects' =>  $a_projects,'q_request' =>  $q_request,'pay_type' =>  $pay_type]);
+            return View('bids.create_project', ['companys' =>  $companys,'brands' =>  $brands,'myprojects' =>  $myprojects,'q_request' =>  $q_request,'pay_type' =>  $pay_type]);
         }
         
     }
@@ -263,7 +263,7 @@ class BidsController extends Controller {
     //投标方 招标公告
     public function bidder_list()
     {
-        $bids = Bid::where('status','>', 0)->orderBy('created_at', 'desc')->get();
+        $bids = Bid::where('status','>=', 0)->orderBy('created_at', 'desc')->get();
         return \View::make('bids.bidder.all-list')
             ->with('bids', $bids);
     }

@@ -8,13 +8,8 @@ namespace Toplan\PhpSms;
  * @property string $key
  * @property string $times
  */
-class JuHeAgent extends Agent
+class JuHeAgent extends Agent implements TemplateSms, VoiceCode
 {
-    public function sendSms($to, $content, $tempId, array $data)
-    {
-        $this->sendTemplateSms($to, $tempId, $data);
-    }
-
     public function sendTemplateSms($to, $tempId, array $data)
     {
         $sendUrl = 'http://v.juhe.cn/sms/send';
@@ -26,18 +21,18 @@ class JuHeAgent extends Agent
             $split = !$tplValue ? '' : '&';
             $tplValue .= "$split#$key#=$value";
         }
-        $tplValue = !$tplValue ?: urlencode($tplValue);
-        $smsConf = [
+        $params = [
             'key'       => $this->key,
             'mobile'    => $to,
             'tpl_id'    => $tempId,
-            'tpl_value' => $tplValue,
+            'tpl_value' => urlencode($tplValue),
+            'dtype'     => 'json',
         ];
-        $result = $this->curl($sendUrl, $smsConf, true);
+        $result = $this->curlGet($sendUrl, $params);
         $this->setResult($result);
     }
 
-    public function voiceVerify($to, $code, $tempId, array $data)
+    public function sendVoiceCode($to, $code)
     {
         $url = 'http://op.juhe.cn/yuntongxun/voice';
         $params = [
@@ -45,26 +40,21 @@ class JuHeAgent extends Agent
             'to'        => $to,
             'playtimes' => $this->times ?: 3,
             'key'       => $this->key,
+            'dtype'     => 'json',
         ];
-        $result = $this->curl($url, $params);
+        $result = $this->curlGet($url, $params);
         $this->setResult($result);
     }
 
     protected function setResult($result)
     {
         if ($result['request']) {
+            $this->result(Agent::INFO, $result['response']);
             $result = json_decode($result['response'], true);
-            if ($result['error_code'] === 0) {
-                $this->result(Agent::SUCCESS, true);
-            }
-            $this->result(Agent::INFO, json_encode($result));
+            $this->result(Agent::SUCCESS, $result['error_code'] === 0);
             $this->result(Agent::CODE, $result['error_code']);
         } else {
-            $this->result(Agent::INFO, '请求失败');
+            $this->result(Agent::INFO, 'request failed');
         }
-    }
-
-    public function sendContentSms($to, $content)
-    {
     }
 }

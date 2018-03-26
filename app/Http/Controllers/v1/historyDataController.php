@@ -50,7 +50,7 @@ class historyDataController extends MarketDataHandleController{
 		->where('brand','=',$brand)
 		->get();
 		// dd($marketPrice);
-		$marketPrice=$this->marketDataHandle($marketPrice);
+		// $marketPrice=$this->marketDataHandle($marketPrice);
 		// dd($marketPrice);
 		// $marketPrice=$marketPrice['data'];
 		foreach ($marketPrice as $key => $value) {

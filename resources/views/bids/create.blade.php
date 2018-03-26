@@ -47,7 +47,7 @@
 	}
 	html body .now-bar{
 		color:#FFF;
-		background:#5bc0de; 
+		background:#5bc0de;
 	}
 	.clear-float{
 		clear:both;
@@ -155,7 +155,7 @@
 		width:30%;
 		min-width:150px;
 		padding-right:10px;
-	} 
+	}
 	.form-for-4 .form-group{
 		float:left;
 		width:24%;
@@ -231,7 +231,7 @@
 									<a href="/projects/create" class="btn btn-default btn-sm">新建</a>
 								</div>
 							</div>
-							
+
 						</div>
 						<div class="form-for-2">
 							<div class="form-group" select-connect>
@@ -269,7 +269,7 @@
 
 								</select>
 							</div>
-							
+
 						</div>
 						<div class="form-group select-products">
 							<label for="exampleInputEmail1">计量方式</label>
@@ -315,7 +315,7 @@
 							</div>
 							<div style="clear:both;"></div>
 						</div> --}}
-						
+
 
 						<p class="bg-success">选择投标流程的时间</p>
 						<div>
@@ -345,7 +345,7 @@
 							</div>
 							<div style="clear:both;"></div>
 						</div>
-						
+
 
 						<p class="bg-success">告诉投标方您的报价要求,以及结算要求</p>
 						<div id="quote_request" class="form-group checkbox">
@@ -383,7 +383,7 @@
 							</div>
 							<div style="clear:both;"></div>
 						</div>
-						
+
 						<label for="">报价清单</label>
 						<table class="table table-bordered" id="bids-table">
 							<thead>
@@ -500,7 +500,7 @@
 						@endforeach
 						</select>
 					</div>
-					
+
 					<div style="clear:both;"></div>
 				</div>
 
@@ -518,15 +518,15 @@
 
 
 <script>
-	setLeftBar("新建招标");
-	setPageTitle("批次招标");
-	setOptionFocus("批次招标");
+	// setLeftBar("新建招标");
+	// setPageTitle("批次招标");
+	// setOptionFocus("批次招标");
 	$('.collapse').collapse();
 
 	jeDate({
 	    dateCell:".time-select",
 	    format:"YYYY-MM-DD hh:mm:ss",
-	    isTime:true, 
+	    isTime:true,
 	    minDate:"2014-09-19 00:00",
 	    isToday:true,
 	    isinitVal:false
@@ -751,7 +751,7 @@
 			    //初始化页面上的一级联动
 			    console.log($("#bids-table>tbody>tr").last());
 			    var tagetElement = $("#bids-table>tbody>tr").last();
-			    // 
+			    //
 			    $(tagetElement).find(".frist-select").append("<option disabled='disabled' selected='selected'>请选择</option>");
 			    for(var i=0; i<cats[0].child.length; i++){
 			    	$(tagetElement).find(".frist-select").append("<option value='"+cats[0].child[i].id+"'>"+cats[0].child[i].name+"</option>");
@@ -856,7 +856,7 @@
 		});
 
 	});
-	
+
 </script>
 
 @endsection

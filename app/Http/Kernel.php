@@ -59,5 +59,6 @@ class Kernel extends HttpKernel
         'StageReidrect' => \App\Http\Middleware\StageReidrect::class,
         'cors' => \App\Http\Middleware\Cors::class,
         'apitest' => \App\Http\Middleware\ApiVarification::class,
+        'checkPermission' => \App\Http\Middleware\CheckPermission::class,
     ];
 }

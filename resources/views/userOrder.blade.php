@@ -9,6 +9,7 @@
 </head>
 <body>
 	<div id="app"></div>
+    <script src="./data/dist/vendor.js"></script>
 	<script src="https://cdn.bootcss.com/jquery/3.0.0/jquery.js"></script>
     <script>
         var localUrl = "www.gangerp-local.com";

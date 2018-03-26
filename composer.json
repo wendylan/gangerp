@@ -18,13 +18,17 @@
         "backpack/newscrud": "^2.1",
         "backpack/permissionmanager": "^2.1",
         "backpack/langfilemanager": "^1.0",
-        "toplan/laravel-sms": "2.5.*",
         "barryvdh/laravel-dompdf": "^0.7.0",
         "venturecraft/revisionable": "1.*",
         "hootlex/laravel-moderation": "^1.0",
         "mews/captcha": "^2.1",
         "barryvdh/laravel-cors": "^0.8.2",
-        "dingo/api": "1.0.x@dev"
+        "dingo/api": "^1.0@dev",
+        "maatwebsite/excel": "~2.1.0",
+        "toplan/task-balancer": "0.5.0",
+        "toplan/phpsms": "1.8.3",
+        "toplan/laravel-sms": "~2.6",
+        "gregwar/captcha": "dev-master"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -43,7 +47,7 @@
             "App\\": "app/"
         },
         "files": [
-            "app/helpers.php" 
+            "app/helpers.php"
         ]
     },
     "autoload-dev": {

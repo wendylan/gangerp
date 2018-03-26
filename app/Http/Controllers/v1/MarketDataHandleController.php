@@ -2,6 +2,10 @@
 namespace App\Http\Controllers\v1;
 use Illuminate\Http\Request;
 use DB;
+use App\Models\DataModels\DataMarketPriceRule;
+use App\Models\Steel_products;
+use App\Models\DataModels\DataMarketRule;
+use App\Models\DataModels\DataPriceSource;
 
 class MarketDataHandleController extends BaseController
 {
@@ -156,5 +160,120 @@ class MarketDataHandleController extends BaseController
 		return $this->responseBuild( null );
 	}
 
+	// 保存定价规则
+	public function edit(Request $request){
+		$active_rule = $request->active_rule;
+		$content = $request->content;
+		$brand_id = $request->brand_id;
+		$result = DB::transaction(function () use($content, $active_rule, $brand_id) {
+			DataMarketRule::where('brand_id', $brand_id)->update(['active_rule' => $active_rule]);
+			foreach ($content as $key => $value) {
+				$id = $value['id'];
+				unset($value['id']);
+				if($active_rule == 1){
+					DataMarketPriceRule::where('id', $id)
+					->update([ 'float_type'=>$value['float_type'], 'float_price'=>$value['float_price'], 'supplier_id'=>$value['supplier_id']]);
+				}else{
+					DataMarketPriceRule::where('id', $id)
+					->update([ 'customize_float_type'=>$value['customize_float_type'], 'customize_float_price'=>$value['customize_float_price'], 'supplier_id'=>$value['supplier_id']]);
+				}
+				
+			}
+		});
+
+		return $this->responseBuild($result);
+	}
+
+	// 保存开单操作
+	public function changeState(Request $request){
+		$range = $request->range ? $request->range : null;
+		$action = $request->action ? $request->action : null;
+		$content = $request->content;
+		$result;
+
+		if($range == null){
+			$result = DB::transaction(function () use($content) {
+				foreach ($content as $key => $value) {
+					DataMarketPriceRule::where('id', $value['id'])
+						->update(['is_active' => $value['is_active']]);
+				}
+			});
+		}else if($range == 'all'){
+			$allSteel = Steel_products::all()->toArray();
+			$result = DB::transaction(function () use($allSteel, $action) {
+				foreach ($allSteel as $key => $value) {
+					DataMarketPriceRule::where('steel_products_id', $value['id'])
+						->update(['is_active' => ($action=='close' ? 0 : 1)]);
+				}
+			});
+		}
+
+
+		return $this->responseBuild($result);
+	}
+
+	// 处理基础数据 根据rule来计算买买买价格
+	// 符合rule的市场价或新增三个属性 
+	// hasRuleChanged(是否有改变) is_active(是否开单状态) base_price(改变前的价格)
+	public function handleMarketDatas(Array $marketDatas){
+		// 获取规则数据
+		$rules = DB::table('data_market_price_rule')
+			->join('steel_products', 'data_market_price_rule.steel_products_id', '=', 'steel_products.id')
+			->leftJoin('data_price_source', 'data_market_price_rule.supplier_id', '=', 'data_price_source.id')
+			->select('brand', 'cate_spec', 'material', 'size', 'name', 'is_active', 'float_type', 'float_price')
+			->get()->toArray();
+
+		// 根据规则计算现货价
+		foreach ($rules as $key => $value) {
+			foreach ($marketDatas as $index => $val) {
+				if( 
+					$value->brand == $val['brand'] &&
+					$value->cate_spec == $val['cate_spec'] &&
+					$value->material == $val['material'] &&
+					$value->size == $val['size'] &&
+					($value->float_type == 1 ? true : $value->name == $val['price_source'])
+				){
+					$marketDatas[$index]['hasRuleChanged'] = true;
+					$marketDatas[$index]['is_active'] = $value->is_active;
+					$marketDatas[$index]['base_price'] = $val['price'];
+					$marketDatas[$index]['price'] = (int)$val['price'] + $value->float_price;
+					break;
+				}
+			}
+		}
+		return $marketDatas;
+	}
+
+	// 获取指定品牌的定价规则
+    public function getMarketPriceStateByBrand(Request $request){
+        $result = [];
+        $brand = $request->brand;
+        $brands = DataMarketRule::fullDatas();
+
+        // databaes中是否有匹配的品牌
+        $active_rule = false;
+        foreach ($brands as $key => $value) {
+            if($value['abbreviation'] == $brand){
+                $active_rule = $value['active_rule'];
+            }
+        }
+
+        if($active_rule){
+            $modelDatas = DataMarketPriceRule::all();
+            $tempSupplier = DataPriceSource::all()->toArray();
+            $result['active_rule'] = $active_rule;
+            foreach ($modelDatas as $key => $value) {
+                $suppler = $value->suppler;
+                $steel = $value->steel;
+                if($steel!=null && $brand == $steel->brand){
+                    $result['content'][] = [ 'id'=>$value->id, 'cate_spec'=>$steel->cate_spec, 'material'=>$steel->material, 'size'=>$steel->size, 'floatType'=>$value->float_type, 'floatPrice'=>$value->float_price, 'customizeFloatType'=>$value->customize_float_type, 'customizeFloatPrice'=>$value->customize_float_price, 'isActive'=>$value->is_active, 'supplier_selected'=>$value->supplier_id?$value->supplier_id:null, 'suppliers'=> $tempSupplier ];
+                }
+            }
+            return $this->responseBuild($result);
+        }else{
+            return $this->response->error('参数有误', 500);
+        }
+
+    }
 
 }

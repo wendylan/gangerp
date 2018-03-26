@@ -30,7 +30,8 @@
       text-decoration:none;
     }
     .navbar-custom-menu ul.navbar-nav,li,a{
-          height: 100%;
+          /*height: 100%;*/
+          height: auto;
     }
     .navbar-custom-menu ul.navbar-nav>li>a,i{
       line-height:2;

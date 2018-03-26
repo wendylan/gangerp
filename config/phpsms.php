@@ -18,7 +18,7 @@ return [
      * 'Luosimao', 'YunTongXun', 'YunPian', 'SubMail', 'Ucpaas', 'JuHe', 'Alidayu', 'Log'
      */
     'scheme' => [
-        'YunPian',
+        'Qcloud',
     ],
 
     /*
@@ -28,6 +28,23 @@ return [
      *
      */
     'agents' => [
+        'Qcloud' => [
+            //请求地址
+            // 'sendUrl' => 'https://yun.tim.qq.com/v5/tlssmssvr/sendsms',
+
+            //淘宝开放平台中，对应阿里大鱼短信应用的App Key
+            'appId' => '1400049889',
+            'appKey' => '1feec1b158d0a4612a298b2051a13f21',
+
+            // //淘宝开放平台中，对应阿里大鱼短信应用的App Secret
+            // 'secretKey' => 'your secret key',
+
+            // //短信签名，传入的短信签名必须是在阿里大鱼“管理中心-短信签名管理”中的可用签名
+            // 'smsFreeSignName' => 'your sms free sign name',
+
+            // //被叫号显(用于语音通知)，传入的显示号码必须是阿里大鱼“管理中心-号码管理”中申请或购买的号码
+            // 'calledShowNum' => 'your called show num',
+        ],
 
         /*
          * -----------------------------------
@@ -37,10 +54,10 @@ return [
          * website:http://www.yunpian.com
          * support content sms.
          */
-        'YunPian' => [
-            //用户唯一标识，必须
-            'apikey' => '30c2ee1ff7dabb7f3be317b668cd2091 ',
-        ],
+        // 'YunPian' => [
+        //     //用户唯一标识，必须
+        //     'apikey' => '30c2ee1ff7dabb7f3be317b668cd2091 ',
+        // ],
 
         // /*
         //  * -----------------------------------

@@ -13,7 +13,13 @@ class PurchasePageController extends BaseController{
 		return $this->responseBuild($data);
 	}
 
-	
+	public function getBrandGroupSpec(Request $req){
+		if(!$req->brand||!count($req->brand)){
+			return $this->responseBuild([]);
+		}
+		$data=Steel_products::getBrandGroupSpec($req->brand);
+		return $this->responseBuild($data);
+	}
 
 }
 

@@ -4273,155 +4273,6 @@
         ]
     },
     {
-        "name": "toplan/task-balancer",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/toplan/task-balancer.git",
-            "reference": "32914c1162fd566d811315f3e015039870642150"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/toplan/task-balancer/zipball/32914c1162fd566d811315f3e015039870642150",
-            "reference": "32914c1162fd566d811315f3e015039870642150",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.4.0"
-        },
-        "time": "2016-04-14T09:24:31+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Toplan\\TaskBalance\\": "src/TaskBalancer/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "toplan",
-                "email": "toplan710@gmail.com"
-            }
-        ],
-        "description": "lightweight and powerful task load balancing for php (like the nginx load balancing)",
-        "keywords": [
-            "balance",
-            "balancer",
-            "load balancing",
-            "task"
-        ]
-    },
-    {
-        "name": "toplan/phpsms",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/toplan/phpsms.git",
-            "reference": "6080f5d4ab6f1599938358896fabdcd2da655a91"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/toplan/phpsms/zipball/6080f5d4ab6f1599938358896fabdcd2da655a91",
-            "reference": "6080f5d4ab6f1599938358896fabdcd2da655a91",
-            "shasum": ""
-        },
-        "require": {
-            "jeremeamia/superclosure": "~2.2.0",
-            "php": ">=5.4.0",
-            "toplan/task-balancer": ">=0.4.2"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "~4.0"
-        },
-        "time": "2016-07-21T02:24:11+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Toplan\\PhpSms\\": [
-                    "src/phpsms/",
-                    "src/phpsms/agents/"
-                ],
-                "Toplan\\PhpSms\\Facades\\": [
-                    "src/phpsms/facades/"
-                ]
-            },
-            "classmap": [
-                "src/phpsms/lib/"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "toplan",
-                "email": "toplan710@gmail.com"
-            }
-        ],
-        "description": "sms send library for php, support the main SMS service provider.",
-        "keywords": [
-            "php sms",
-            "phpsms",
-            "sms",
-            "sms library for php"
-        ]
-    },
-    {
-        "name": "toplan/laravel-sms",
-        "version": "2.5.2",
-        "version_normalized": "2.5.2.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/toplan/laravel-sms.git",
-            "reference": "fb24638182de4e139d32e01d6a7aeaa9005ac82f"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/toplan/laravel-sms/zipball/fb24638182de4e139d32e01d6a7aeaa9005ac82f",
-            "reference": "fb24638182de4e139d32e01d6a7aeaa9005ac82f",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.4.0",
-            "toplan/phpsms": ">=1.6.0"
-        },
-        "time": "2016-12-05T02:07:29+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "classmap": [
-                "src/"
-            ],
-            "psr-0": {
-                "Toplan\\Sms": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "toplan",
-                "email": "toplan710@gmail.com"
-            }
-        ],
-        "description": "sms send package for laravel",
-        "keywords": [
-            "laravel sms",
-            "laravel-sms",
-            "sms"
-        ]
-    },
-    {
         "name": "backpack/generators",
         "version": "1.1.7",
         "version_normalized": "1.1.7.0",
@@ -6276,6 +6127,394 @@
             "dingo",
             "laravel",
             "restful"
+        ]
+    },
+    {
+        "name": "tijsverkoyen/css-to-inline-styles",
+        "version": "2.2.0",
+        "version_normalized": "2.2.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/tijsverkoyen/CssToInlineStyles.git",
+            "reference": "ab03919dfd85a74ae0372f8baf9f3c7d5c03b04b"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://files.phpcomposer.com/files/tijsverkoyen/CssToInlineStyles/ab03919dfd85a74ae0372f8baf9f3c7d5c03b04b.zip",
+            "reference": "ab03919dfd85a74ae0372f8baf9f3c7d5c03b04b",
+            "shasum": ""
+        },
+        "require": {
+            "php": "^5.5 || ^7",
+            "symfony/css-selector": "^2.7|~3.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "~4.8|5.1.*"
+        },
+        "time": "2016-09-20T12:50:39+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "TijsVerkoyen\\CssToInlineStyles\\": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Tijs Verkoyen",
+                "email": "css_to_inline_styles@verkoyen.eu",
+                "role": "Developer"
+            }
+        ],
+        "description": "CssToInlineStyles is a class that enables you to convert HTML-pages/files into HTML-pages/files with inline styles. This is very useful when you're sending emails.",
+        "homepage": "https://github.com/tijsverkoyen/CssToInlineStyles"
+    },
+    {
+        "name": "phpoffice/phpexcel",
+        "version": "1.8.x-dev",
+        "version_normalized": "1.8.9999999.9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/PHPOffice/PHPExcel.git",
+            "reference": "185bf412339526c97a98d959c3c0ecf4b7c80016"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://files.phpcomposer.com/files/PHPOffice/PHPExcel/185bf412339526c97a98d959c3c0ecf4b7c80016.zip",
+            "reference": "185bf412339526c97a98d959c3c0ecf4b7c80016",
+            "shasum": ""
+        },
+        "require": {
+            "ext-mbstring": "*",
+            "ext-xml": "*",
+            "ext-xmlwriter": "*",
+            "php": "^5.2|^7.0"
+        },
+        "require-dev": {
+            "squizlabs/php_codesniffer": "2.*"
+        },
+        "time": "2017-03-02T00:38:00+00:00",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "PHPExcel": "Classes/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "LGPL-2.1"
+        ],
+        "authors": [
+            {
+                "name": "Maarten Balliauw",
+                "homepage": "http://blog.maartenballiauw.be"
+            },
+            {
+                "name": "Erik Tilt"
+            },
+            {
+                "name": "Franck Lefevre",
+                "homepage": "http://rootslabs.net"
+            },
+            {
+                "name": "Mark Baker",
+                "homepage": "http://markbakeruk.net"
+            }
+        ],
+        "description": "PHPExcel - OpenXML - Read, Create and Write Spreadsheet documents in PHP - Spreadsheet engine",
+        "homepage": "https://github.com/PHPOffice/PHPExcel",
+        "keywords": [
+            "OpenXML",
+            "excel",
+            "php",
+            "spreadsheet",
+            "xls",
+            "xlsx"
+        ]
+    },
+    {
+        "name": "maatwebsite/excel",
+        "version": "2.1.10",
+        "version_normalized": "2.1.10.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Maatwebsite/Laravel-Excel.git",
+            "reference": "a544a9b45b971499fb3b0fb7499ba0ac3b430233"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://files.phpcomposer.com/files/Maatwebsite/Laravel-Excel/a544a9b45b971499fb3b0fb7499ba0ac3b430233.zip",
+            "reference": "a544a9b45b971499fb3b0fb7499ba0ac3b430233",
+            "shasum": ""
+        },
+        "require": {
+            "illuminate/cache": "5.0.*|5.1.*|5.2.*|5.3.*|5.4.*",
+            "illuminate/config": "5.0.*|5.1.*|5.2.*|5.3.*|5.4.*",
+            "illuminate/filesystem": "5.0.*|5.1.*|5.2.*|5.3.*|5.4.*",
+            "illuminate/support": "5.0.*|5.1.*|5.2.*|5.3.*|5.4.*",
+            "nesbot/carbon": "~1.0",
+            "php": ">=5.5",
+            "phpoffice/phpexcel": "1.8.*",
+            "tijsverkoyen/css-to-inline-styles": "~2.0"
+        },
+        "require-dev": {
+            "mockery/mockery": "~0.9",
+            "orchestra/testbench": "3.1.*",
+            "phpseclib/phpseclib": "~1.0",
+            "phpunit/phpunit": "~4.0"
+        },
+        "suggest": {
+            "illuminate/http": "5.0.*|5.1.*|5.2.*|5.3.*|5.4.*",
+            "illuminate/queue": "5.0.*|5.1.*|5.2.*|5.3.*|5.4.*",
+            "illuminate/routing": "5.0.*|5.1.*|5.2.*|5.3.*|5.4.*",
+            "illuminate/view": "5.0.*|5.1.*|5.2.*|5.3.*|5.4.*"
+        },
+        "time": "2017-01-20T16:16:51+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "src/Maatwebsite/Excel"
+            ],
+            "psr-0": {
+                "Maatwebsite\\Excel\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "LGPL"
+        ],
+        "authors": [
+            {
+                "name": "Maatwebsite.nl",
+                "email": "patrick@maatwebsite.nl"
+            }
+        ],
+        "description": "An eloquent way of importing and exporting Excel and CSV in Laravel 4 with the power of PHPExcel",
+        "keywords": [
+            "PHPExcel",
+            "batch",
+            "csv",
+            "excel",
+            "export",
+            "import",
+            "laravel"
+        ]
+    },
+    {
+        "name": "gregwar/captcha",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Gregwar/Captcha.git",
+            "reference": "1d06ac8e12d2b3e0df39586d78b9f50e086a0bea"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://files.phpcomposer.com/files/Gregwar/Captcha/1d06ac8e12d2b3e0df39586d78b9f50e086a0bea.zip",
+            "reference": "1d06ac8e12d2b3e0df39586d78b9f50e086a0bea",
+            "shasum": ""
+        },
+        "require": {
+            "ext-gd": "*",
+            "ext-mbstring": "*",
+            "php": ">=5.3.0",
+            "symfony/finder": "~3.0|~4.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "^6.4"
+        },
+        "time": "2017-12-30T16:18:44+00:00",
+        "type": "captcha",
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "Gregwar\\": "src/Gregwar"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Grégoire Passault",
+                "email": "g.passault@gmail.com",
+                "homepage": "http://www.gregwar.com/"
+            },
+            {
+                "name": "Jeremy Livingston",
+                "email": "jeremy.j.livingston@gmail.com"
+            }
+        ],
+        "description": "Captcha generator",
+        "homepage": "https://github.com/Gregwar/Captcha",
+        "keywords": [
+            "bot",
+            "captcha",
+            "spam"
+        ]
+    },
+    {
+        "name": "toplan/task-balancer",
+        "version": "0.5.0",
+        "version_normalized": "0.5.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/toplan/task-balancer.git",
+            "reference": "6ba16aafbf6888de0f0c53ea93dfff844b6ef27f"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://files.phpcomposer.com/files/toplan/task-balancer/6ba16aafbf6888de0f0c53ea93dfff844b6ef27f.zip",
+            "reference": "6ba16aafbf6888de0f0c53ea93dfff844b6ef27f",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.4.0"
+        },
+        "time": "2017-05-15T03:19:56+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Toplan\\TaskBalance\\": "src/TaskBalancer/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "toplan",
+                "email": "toplan710@gmail.com"
+            }
+        ],
+        "description": "lightweight and powerful task load balancing.",
+        "keywords": [
+            "balance",
+            "load balancing",
+            "task"
+        ]
+    },
+    {
+        "name": "toplan/phpsms",
+        "version": "1.8.3",
+        "version_normalized": "1.8.3.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/toplan/phpsms.git",
+            "reference": "863918ed0970d335471fb48c09f9f446a4daddbd"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://files.phpcomposer.com/files/toplan/phpsms/863918ed0970d335471fb48c09f9f446a4daddbd.zip",
+            "reference": "863918ed0970d335471fb48c09f9f446a4daddbd",
+            "shasum": ""
+        },
+        "require": {
+            "jeremeamia/superclosure": "~2.2",
+            "php": ">=5.4.0",
+            "toplan/task-balancer": "~0.5"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "~4.0"
+        },
+        "time": "2017-07-10T17:23:21+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Toplan\\PhpSms\\": [
+                    "src/phpsms/",
+                    "src/phpsms/agents/",
+                    "src/phpsms/interfaces/"
+                ],
+                "Toplan\\PhpSms\\Facades\\": [
+                    "src/phpsms/facades/"
+                ]
+            },
+            "classmap": [
+                "src/phpsms/lib/"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "toplan",
+                "email": "toplan710@gmail.com"
+            }
+        ],
+        "description": "Probably the most intelligent, elegant sms send library in php",
+        "keywords": [
+            "php",
+            "phpsms",
+            "sms",
+            "sms library"
+        ]
+    },
+    {
+        "name": "toplan/laravel-sms",
+        "version": "2.6.5",
+        "version_normalized": "2.6.5.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/toplan/laravel-sms.git",
+            "reference": "9c8427493c768c07a15fb993436267b81f31bae5"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://files.phpcomposer.com/files/toplan/laravel-sms/9c8427493c768c07a15fb993436267b81f31bae5.zip",
+            "reference": "9c8427493c768c07a15fb993436267b81f31bae5",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.4.0",
+            "toplan/phpsms": "~1.8"
+        },
+        "time": "2017-06-23T10:07:04+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "src/"
+            ],
+            "psr-0": {
+                "Toplan\\Sms": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "toplan",
+                "email": "toplan710@gmail.com"
+            }
+        ],
+        "description": "A mobile phone number validation solution based on laravel",
+        "keywords": [
+            "laravel",
+            "laravel-sms",
+            "mobile",
+            "phone",
+            "sms"
         ]
     }
 ]

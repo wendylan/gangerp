@@ -29,4 +29,15 @@ class DataWebPriceDate extends Model
         }
     }
 
+    // 获取最后一次网价
+    static function getWebPriceNewly(){
+        $webPrice =  DataWebPriceDate::orderBy('id', 'DESC')->first();
+        return $webPrice;
+    }
+
+    //关联关系
+    public function getPrice(){
+        return $this->hasMany('App\Models\DataModels\DataWebPrice', 'file_name', 'date');
+    }
+
 }

@@ -30,6 +30,7 @@ class DataProjectController extends BaseController{
 					'addr' => $datas['addr'],
 					'brands' => json_encode($this->brandsToId($datas['brands'], JSON_UNESCAPED_UNICODE)),
                     'receivers' => json_encode($datas['receiverInfo'], JSON_UNESCAPED_UNICODE),
+                    'handlers' => json_encode($datas['handlerInfo'], JSON_UNESCAPED_UNICODE),
 					'settlement' => json_encode($datas['settlement'], JSON_UNESCAPED_UNICODE)
 				]);
 
@@ -74,6 +75,7 @@ class DataProjectController extends BaseController{
         			'addr' => $reqDatas['addr'],
         			'brands' => json_encode($this->brandsToId($reqDatas['brands'], JSON_UNESCAPED_UNICODE)),
                     'receivers' => json_encode($reqDatas['receiverInfo'], JSON_UNESCAPED_UNICODE),
+                    'handlers' => json_encode($reqDatas['handlerInfo'], JSON_UNESCAPED_UNICODE),
         			'settlement' => json_encode($reqDatas['settlement'], JSON_UNESCAPED_UNICODE)
         		]);
 
@@ -96,32 +98,34 @@ class DataProjectController extends BaseController{
         return DataProject::destroy($projectId);
     }
 
+    # 获取user拥有的项目
     public function getUserProject(){
         $isAgent = Auth::user()->hasRole('次终端用户');
         if($isAgent){
-            $projectDatas = DataProject::where('supplier_id', Auth::id())->orWhere('supplier_id', -1)->get()->toArray();
+            $projectDatas = DataProject::where('supplier_id', Auth::id())->get()->toArray();
         }else{
             $projectDatas = DataProject::where('user_id', Auth::id())->get()->toArray();
         }
-
 		$result = [];
         # 整理项目数据
 		if(count($projectDatas)){
 			foreach ($projectDatas as $key => $value) {
 				$tempData = DataProjectInfo::where('project_info_id', $value['project_info_id'])->get()->toArray()[0];
                 $tempData['receiverInfo'] = json_decode($tempData['receivers']);
+                $tempData['handlerInfo'] = json_decode($tempData['handlers']);
                 $tempData['settlement'] = json_decode($tempData['settlement']);
 				$tempData['brands'] = $this->brandsIdToText(json_decode($tempData['brands']));
                 $tempData['project_id'] = $value['project_id'];
-                // # 次终端用户能看到属于自己的项目 和 还没有被其他次终端关联的项目
-                // if($isAgent && ( $value['user_id']!=-1 || $value['supplier_id']!=-1 ) && ( $value['supplier_id']==Auth::id() || $value['supplier_id']==-1 ) ){
-                //     $tempData['company'] = Company::where('user_id', $value['user_id'])->get()->isEmpty() ? null : Company::where('user_id', $value['user_id'])->get()->toArray()[0]['name'];
-                // }
-                // # 终端用户仅能看到自己的项目
-                // if(!$isAgent && $value['user_id']==Auth::id() ){
-                //     $tempData['company'] = Company::where('user_id', $value['user_id'])->get()->isEmpty() ? null : Company::where('user_id', $value['user_id'])->get()->toArray()[0]['name'];
-                // }
-                $tempData['company'] = Company::where('user_id', $value['user_id'])->get()->isEmpty() ? null : Company::where('user_id', $value['user_id'])->get()->toArray()[0]['name'];
+                $myCompany = Company::where('user_id', Auth::user()->id)->get();
+                $tempData['myCompany'] = count($myCompany) ? $myCompany[0]['name'] : [];
+                $tempData['supplier_id'] = $value['supplier_id'];
+                if($isAgent){
+                    $company = Company::where('user_id', $value['user_id'])->get();
+                    $tempData['company'] = count($company) ? $company[0]['name'] : [];
+                }else{
+                    $company = Company::where('user_id', $value['supplier_id'])->get();
+                    $tempData['company'] = count($company) ? $company[0]['name'] : [];;
+                }
                 $result[] = $tempData;
 			}
 			return $result;
@@ -130,21 +134,24 @@ class DataProjectController extends BaseController{
 		}
     }
 
+    # 获取用户拥有的项目与公司列表
+    public function getUserProjectAndCompanyList(){
+        $projects = $this->getUserProject() ? $this->getUserProject() : [];
+		$companys = Company::select('user_id', 'name')->get()->toArray();
+		return array('data'=>['projects'=>$projects, 'companys'=>$companys],'message'=>'success','status_code'=>200);
+    }
+
     # 更换项目关联的公司
     # 参数 项目ID 目标用户ID
-    # 成功返回true 失败返回-1
+    # 成功返回true 失败返回0
     public function changesContact($projectId, $targetId){
         $isAgent = Auth::user()->hasRole('次终端用户');
         $project = DataProject::find($projectId);
         if(isset($project)){
             if($isAgent){
-                $project->user_id = $targetId;
-                $project->supplier_id = Auth::id();
-                return $project->save();
+                return DataProject::find($projectId)->update(['user_id'=>$targetId]);
             }else{
-                $project->supplier_id = $targetId;
-                $project->save();
-                return $project->toArray();
+                return DataProject::find($projectId)->update(['supplier_id'=>$targetId]);
             }
         }else{
             return 0;
@@ -210,6 +217,7 @@ class DataProjectController extends BaseController{
 						'brand' => $value,
 						'specification' => $val,
 						'reference' => $datas['settlement']['priceType'],
+                        'cost_freight' => $datas['settlement']['costFreight'],
 						'count_number' => $datas['settlement']['calculateType']=='上浮' ? $datas['settlement']['price'] : -$datas['settlement']['price']
 					];
 				}
@@ -225,6 +233,7 @@ class DataProjectController extends BaseController{
                         'brand' => $value['onemoreBrand'],
                         'specification' => $val,
                         'reference' => $value['priceType'],
+                        'cost_freight' => $datas['settlement']['costFreight'],
                         'count_number' => $value['calculateType']=='上浮' ? $value['price'] : -$value['price']
                     ];
                 }
@@ -238,6 +247,7 @@ class DataProjectController extends BaseController{
                         'brand' => $value,
                         'specification' => $val['name'],
                         'reference' => '网价',
+                        'cost_freight' => $datas['settlement']['costFreight'],
                         'count_number' => $val['calculateType']=='上浮' ? $val['price'] : -$val['price']
                     ];
                 }
@@ -255,6 +265,7 @@ class DataProjectController extends BaseController{
                         'reference' => $datas['settlement']['priceType'],
                         'count_number' => $datas['settlement']['calculateType']=='上浮' ? $datas['settlement']['price'] : -$datas['settlement']['price'],
                         'freight' => $datas['settlement']['freight'],
+                        'cost_freight' => $datas['settlement']['costFreight'],
                         'ponderation' => $datas['settlement']['ponderation_price']
                     ];
                 }
@@ -271,6 +282,7 @@ class DataProjectController extends BaseController{
                         'reference' => $value['priceType'],
                         'count_number' => $value['calculateType']=='上浮' ? $value['price'] : -$value['price'],
                         'freight' => $datas['settlement']['freight'],
+                        'cost_freight' => $datas['settlement']['costFreight'],
                         'ponderation' => $datas['settlement']['ponderation_price']
                     ];
                 }
@@ -288,6 +300,7 @@ class DataProjectController extends BaseController{
                         'reference' => $datas['settlement']['priceType'],
                         'count_number' => $datas['settlement']['calculateType']=='上浮' ? $datas['settlement']['price'] : -$datas['settlement']['price'],
                         'freight' => $datas['settlement']['freight'],
+                        'cost_freight' => $datas['settlement']['costFreight'],
                         'ponderation' => $datas['settlement']['ponderation_price'],
                         'crane' => $datas['settlement']['crane_price'],
                         'funds_rate' => $datas['settlement']['funds_price_rate']

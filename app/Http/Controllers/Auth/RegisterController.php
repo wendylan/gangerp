@@ -6,6 +6,8 @@ use App\User;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use SmsManager;
+use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
@@ -27,7 +29,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/center/company-info';
+    protected $redirectTo = '/companyInfo';
 
     /**
      * Create a new controller instance.
@@ -47,16 +49,40 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        return Validator::make($data, [
-            'name' => 'max:255',
-            'email' => 'required|email|max:255|unique:users',
+        $messages = [
+            'verify_code' => '手机验证码错误',
+            'mobile.unique' => '该手机号码已注册',
+        ];
+        $validator = Validator::make($data, [
+            'mobile'     => 'required|unique:users',
             'password' => 'required|min:6|confirmed',
-        ]);
+            'verifyCode' => 'required|verify_code',
+        ],$messages);
+
+        if ($validator->fails()) {
+            SmsManager::forgetState();
+            return response()->json(['errors'=>$validator->errors()]);
+        }
+
+        return $validator;
     }
+
+    // protected function validator(array $data)
+    // {
+    //     $validator = Validator::make($data, [
+    //         'mobile'     => 'required|confirm_mobile_not_change|confirm_rule:mobile_required',
+    //         'verifyCode' => 'required|verify_code',
+    //     ]);
+    //     if ($validator->fails()) {
+    //        SmsManager::forgetState();
+    //        return redirect()->back()->withErrors($validator);
+    //     }
+    // }
 
 
     protected function phoneValidator(array $data)
     {
+        // dd($data);
         return Validator::make($data, [
             'mobile'     => 'required',
             // 'verifyCode' => 'required|verify_code',
@@ -70,14 +96,37 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return User
      */
+    // protected function create(array $data)
+    // {
+    //     dd($data);
+    //     return User::create([
+    //        // 'name' => $data['name'],
+    //         'email' => $data['email'],
+    //         'password' => bcrypt($data['password']),
+    //     ]);
+    // }
     protected function create(array $data)
     {
+        // $messages = [
+        //     'validation.verify_code' => '手机验证码错误',
+        //     'unique' => '该手机号码已注册',
+        // ];
+        // $validator = Validator::make($data, [
+        //     'mobile'     => 'required|unique:users',
+        //     'password' => 'required|min:6|confirmed',
+        //     'verifyCode' => 'required|verify_code',
+        // ],$messages);
+        // if ($validator->fails()) {
+        //     dd($validator->errors()->first('mobile'));
+        //    SmsManager::forgetState();
+        // //    return redirect('/')->withErrors($validator);
+        // }
         return User::create([
-           // 'name' => $data['name'],
-            'email' => $data['email'],
+            'mobile' => $data['mobile'],
             'password' => bcrypt($data['password']),
         ]);
     }
+
 
     protected function createbyphone(array $data)
     {
@@ -86,4 +135,10 @@ class RegisterController extends Controller
             'password' => bcrypt($data['password']),
         ]);
     }
+
+    protected function registered(Request $request, $user)
+    {
+        return response()->json(['status'=>'success','msg'=>'注册成功']);
+    }
+
 }

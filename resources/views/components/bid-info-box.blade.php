@@ -49,7 +49,6 @@
 					<h4>报价要求</h4>
 					{{qr_id_to_name_string($bid->quote_request)}}
 					<hr />
-
 					<h4>报价清单</h4>
 					<table class="table" width="100%" border="1">
 								<thead>
@@ -67,10 +66,12 @@
 									<tr>
 										<td>{{$key+1}}</td>
 										<td>{{get_cname_by_id($item[0])}}</td>
+										@if ($item[1])
 										<td>{{get_size_by_id($item[1])}}</td>
 										<td>{{get_material_by_id($item[2])}}</td>
 										<td>{{$item[3]}}</td>
 										<td>{{$item[4]}}</td>
+										@endif
 									</tr>
 									@endforeach
 					</tbody>

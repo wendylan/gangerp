@@ -9,12 +9,22 @@
     <link rel="stylesheet" href="data/res/normalize.css">
     <link rel="stylesheet" href="data/res/element-ui.css">
     <link href="data/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/data/assets/css/font-awesome.min.css">
     <title>data-project</title>
+    <style>
+        .img_box input[type=file]{
+            display: none;
+        }
+        .img_box .el-form-item{
+            margin-bottom: 0;
+        }
+    </style>
   </head>
   <body>
   <!-- {{config('app.dataUrl')}} -->
   <!-- {{csrf_token()}} -->
   <!-- {{Auth::user()->permissions}} -->
+   <script src="./data/dist/vendor.js"></script>
    <script>
       window.Laravel = {!! json_encode([
               'csrfToken' => Auth::user()->permissions,

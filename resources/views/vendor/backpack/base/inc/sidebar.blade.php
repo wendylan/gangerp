@@ -1,6 +1,6 @@
 @if (Auth::check())
     <style>
-     
+
       ul.sidebar-menu a{
         text-decoration:none;
         color:#54667a;
@@ -140,7 +140,7 @@
               <li><a href="{{ url('admin/permission') }}"><i class="fa fa-key"></i> <span>权限</span></a></li>
             </ul>
           </li>
-          
+
           {{-- 产品菜单 --}}
           <li class="header">---  产品</li>
           <!-- Users, Roles Permissions -->
@@ -167,7 +167,7 @@
               <li><a href="{{ url('dataManage') }}"><i class="fa fa-newspaper-o"></i> <span>数据管理</span></a></li>
               <li><a href="{{ url('historyData') }}"><i class="fa fa-newspaper-o"></i> <span>历史数据</span></a></li>
               <li><a href="{{ url('sourceRecommend') }}"><i class="fa fa-newspaper-o"></i> <span>资源推荐</span></a></li>
-              <li><a href="{{ url('priceInfo') }}"><i class="fa fa-newspaper-o"></i> <span>钢材信息</span></a></li>
+              <!-- <li><a href="{{ url('priceInfo') }}"><i class="fa fa-newspaper-o"></i> <span>钢材信息</span></a></li> -->
               <li><a href="{{ url('freight') }}"><i class="fa fa-newspaper-o"></i> <span>运费信息</span></a></li>
             </ul>
           </li>
@@ -210,7 +210,10 @@
         </ul>
 
         <script>
-        
+            $(document).ready(function(){
+                LeftBarActive(window.location.href);
+            });
+
           function setLeftBar(name){
             $(".treeview>a span").each(function(){
               if($(this).text().replace(/\s/,"") == name){
@@ -230,8 +233,16 @@
               }
             });
           }
-          // leftBarOpen();
 
+          function LeftBarActive(name){
+              $(".treeview a").each(function(){
+                if($(this).attr('href') == name){
+                  $(this).parents(".treeview").addClass("active");
+                  $(this).css("color", "#fb9678");
+                }
+
+              });
+          }
         </script>
 
       </section>

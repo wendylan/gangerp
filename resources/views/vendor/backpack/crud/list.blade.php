@@ -42,7 +42,7 @@
             @endforeach
 
             @if ( $crud->buttons->where('stack', 'line') )
-              <th>{{ trans('backpack::crud.actions') }}</th>
+              <th style="min-width:90px;">{{ trans('backpack::crud.actions') }}</th>
             @endif
           </tr>
         </thead>

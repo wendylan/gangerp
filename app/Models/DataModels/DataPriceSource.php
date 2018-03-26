@@ -12,5 +12,5 @@ class DataPriceSource extends Model
     protected $table = 'data_price_source';
     protected $dates = ['deleted_at'];
     protected $guarded = [];
-
+    
 }

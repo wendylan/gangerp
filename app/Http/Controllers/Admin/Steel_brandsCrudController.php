@@ -210,7 +210,8 @@ class Steel_brandsCrudController extends CrudController {
 
 	public function update(UpdateRequest $request)
 	{
-		 $this->crud->hasAccessOrFail('update');
+         $this->crud->hasAccessOrFail('update');
+         $old_steel_code=array();
 
         // fallback to global request instance
         if (is_null($request)) {

@@ -9,9 +9,11 @@
     <link rel="stylesheet" href="data/res/normalize.css">
    <link rel="stylesheet" href="data/res/index.css">
    <link href="data/assets/css/bootstrap.min.css" rel="stylesheet">
+   <link rel="stylesheet" href="/data/assets/css/font-awesome.min.css">
     <title>data-project</title>
   </head>
   <body>
+    <script src="./data/dist/vendor.js"></script>
     <script>
       var localUrl="{{config('app.dataUrl')}}";
       var _token='{{csrf_token()}}'

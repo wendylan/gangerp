@@ -5,64 +5,117 @@ namespace Toplan\PhpSms;
 /**
  * Class ParasiticAgent
  * 寄生代理器
- *
- * @property string   $name
- * @property \Closure $sendSms
- * @property \Closure $voiceVerify
  */
-class ParasiticAgent extends Agent
+class ParasiticAgent extends Agent implements ContentSms, TemplateSms, VoiceCode, ContentVoice, TemplateVoice, FileVoice
 {
-    protected $sendSmsRunning = false;
+    protected static $methods;
 
-    protected $voiceVerifyRunning = false;
+    protected $handlers = [];
 
-    public function sendSms($to, $content, $tempId, array $data)
+    public function __construct(array $config = [], array $handlers = [])
     {
-        if (!is_callable($this->sendSms)) {
-            throw new PhpSmsException("Please give parasitic agent [$this->name] a callable param named `sendSms` by enable config.");
-        }
-        if (!$this->sendSmsRunning) {
-            $this->sendSmsRunning = true;
-            try {
-                call_user_func_array($this->sendSms, [$this, $to, $content, $tempId, $data]);
-                $this->sendSmsRunning = false;
-            } catch (\Exception $e) {
-                $this->sendSmsRunning = false;
+        parent::__construct($config);
 
-                throw $e;
-            }
-        } else {
-            throw new PhpSmsException('Please do not use [$agent->sendSms()] in closure.');
-        }
+        $this->handlers = $handlers;
     }
 
+    /**
+     * Content SMS send process.
+     *
+     * @param string|array $to
+     * @param string       $content
+     */
     public function sendContentSms($to, $content)
     {
-        throw new PhpSmsException('Parasitic agent does not support [sendContentSms] method.');
+        $this->handle(__FUNCTION__, func_get_args());
     }
 
-    public function sendTemplateSms($to, $tempId, array $data)
+    /**
+     * Content voice send process.
+     *
+     * @param string|array $to
+     * @param string       $content
+     */
+    public function sendContentVoice($to, $content)
     {
-        throw new PhpSmsException('Parasitic agent does not support [sendTemplateSms] method.');
+        $this->handle(__FUNCTION__, func_get_args());
     }
 
-    public function voiceVerify($to, $code, $tempId, array $data)
+    /**
+     * File voice send process.
+     *
+     * @param string|array $to
+     * @param int|string   $fileId
+     */
+    public function sendFileVoice($to, $fileId)
     {
-        if (!is_callable($this->voiceVerify)) {
-            throw new PhpSmsException("Please give parasitic agent [$this->name] a callable param named `voiceVerify` by enable config.");
+        $this->handle(__FUNCTION__, func_get_args());
+    }
+
+    /**
+     * Template SMS send process.
+     *
+     * @param string|array $to
+     * @param int|string   $tempId
+     * @param array        $tempData
+     */
+    public function sendTemplateSms($to, $tempId, array $tempData)
+    {
+        $this->handle(__FUNCTION__, func_get_args());
+    }
+
+    /**
+     * Template voice send process.
+     *
+     * @param string|array $to
+     * @param int|string   $tempId
+     * @param array        $tempData
+     */
+    public function sendTemplateVoice($to, $tempId, array $tempData)
+    {
+        $this->handle(__FUNCTION__, func_get_args());
+    }
+
+    /**
+     * Voice code send process.
+     *
+     * @param string|array $to
+     * @param int|string   $code
+     */
+    public function sendVoiceCode($to, $code)
+    {
+        $this->handle(__FUNCTION__, func_get_args());
+    }
+
+    /**
+     * Handle send process by closure.
+     *
+     * @param       $name
+     * @param array $args
+     */
+    protected function handle($name, array $args = [])
+    {
+        if (isset($this->handlers[$name]) && is_callable($this->handlers[$name])) {
+            array_unshift($args, $this);
+            call_user_func_array($this->handlers[$name], $args);
         }
-        if (!$this->voiceVerifyRunning) {
-            $this->voiceVerifyRunning = true;
-            try {
-                call_user_func_array($this->voiceVerify, [$this, $to, $code, $tempId, $data]);
-                $this->voiceVerifyRunning = false;
-            } catch (\Exception $e) {
-                $this->voiceVerifyRunning = false;
+    }
 
-                throw $e;
+    /**
+     * Get methods name which inherit from interfaces.
+     *
+     * @return array
+     */
+    public static function methods()
+    {
+        if (!is_array(self::$methods)) {
+            self::$methods = [];
+            $interfaces = class_implements('Toplan\\PhpSms\\ParasiticAgent');
+            foreach ($interfaces as $interface) {
+                self::$methods = array_merge(self::$methods, get_class_methods($interface));
             }
-        } else {
-            throw new PhpSmsException('Please do not use [$agent->voiceVerify()] in closure.');
         }
+
+        return self::$methods;
     }
 }

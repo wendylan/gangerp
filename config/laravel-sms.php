@@ -11,8 +11,9 @@ return [
     |
     */
     'routeAttributes' => [
+        'enable'  => true,
         'prefix'     => 'gw-sms',
-        'middleware' => 'web',
+        'middleware' => 'api',
     ],
 
     /*
@@ -48,7 +49,7 @@ return [
     'validation' => [
         'mobile' => [
             'isMobile'    => true,
-            'enable'      => true,
+            'enable'      => false,
             'default'     => 'mobile_required',
             'staticRules' => [
                 'mobile_required'     => 'required|zh_mobile',
@@ -77,9 +78,9 @@ return [
     |
     */
     'verifyCode' => [
-        'length'        => 5,
-        'validMinutes'  => 5,
-        'repeatIfValid' => false,
+        'length'        => 4,
+        'validMinutes'  => 10,
+        'repeatIfValid' => true,
         'maxAttempts'   => 0,
     ],
 
@@ -99,9 +100,9 @@ return [
     |       }
     |
     */
-    // 'verifySmsContent' => function ($code, $minutes, $input) {
-    //     return '【钢erp】您的验证码是' . $code . '';
-    // },
+    'content' => function ($code, $minutes, $input) {
+        return '您的验证码为：' . $code;
+    },
 
     /*
     |--------------------------------------------------------------------------
@@ -165,7 +166,7 @@ return [
     | 运行'php artisan migrate'命令可以自动生成。
     |
     */
-    'dbLogs' => false,
+    'dbLogs' => true,
 
     /*
     |--------------------------------------------------------------------------

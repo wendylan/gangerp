@@ -39,9 +39,15 @@ class DatasController extends BaseController
     // 获取规格数据 and 波动范围
     public function getAllspecsAndNotice(Request $Request){
         if(is_string($Request->data)){
-            $result = Steel_products::getBrandSteelSpecs($Request->data);
-            $noticeData = DB::table('data_notice_price')->get();
-            return $this->responseBuild( array('specsData'=>$result, 'noticeData'=>$noticeData) );
+            if(isset($Request->getLine)){
+                $result = Steel_products::where('brand', $Request->data)->get();
+                $noticeData = DB::table('data_notice_price')->get();
+                return $this->responseBuild( array('specsData'=>$result, 'noticeData'=>$noticeData) );
+            }else{
+                $result = Steel_products::getBrandSteelSpecs($Request->data);
+                $noticeData = DB::table('data_notice_price')->get();
+                return $this->responseBuild( array('specsData'=>$result, 'noticeData'=>$noticeData) );
+            }
         }else{
             $this->response->error( "没有参数！",500);
         }
@@ -59,6 +65,29 @@ class DatasController extends BaseController
         $viewModel = array('brands'=>$brandSeting, 'price_source'=>$priceSource,'transport_type'=>$transportTypeSeting[0]->value, 'webDatas'=>$webDatas, 'warehouseData'=>$warehouseData, 'paymentKind'=>$paymentKind);
         return $this->responseBuild($viewModel);
     }
+
+    // 获取指定日期的市场与网价数据
+    public function getInitDatasByMarket(Request $request){
+        if(!preg_match('/^\d{4}[\-](0?[1-9]|1[012])[\-](0?[1-9]|[12][0-9]|3[01])(\s+(0?[0-9]|1[0-9]|2[0-3])\:(0?[0-9]|[1-5][0-9])\:(0?[0-9]|[1-5][0-9]))?$/', $request->input('date') )){
+            return "日期格式有误";
+        }
+        $marketData = DB::table('data_market_datas')->whereDate('created_at', $request->input('date'))->get();
+        $webData = DB::table('data_web_price_date')->where('date', '>', strtotime($request->input('date')))->where('date', '<', (strtotime($request->input('date'))+86400))->get();
+
+        foreach ($marketData as $key => $value) {
+            $value->childData = (new DataMarketDatasChild())->getChildDataFromParentId($value->id);
+        }
+
+        foreach ($webData as $key => $value) {
+            $value->childData = DB::table('data_web_price')->where('file_name', $value->date)->get();
+        }
+
+        $suppiler = DB::table('data_price_source')->get()->toArray();
+        $brands = DB::table('steel_factorys')->get()->toArray();
+        $warehouse = DB::table('data_warehouse')->get()->toArray();
+        return $this->responseBuild(['marketDatas'=>$marketData, 'webDatas'=>$webData, 'brands'=>$brands, 'suppiler'=>$suppiler, 'brands'=>$brands, 'warehouse'=>$warehouse]);
+    }
+
 
     // 获取最后一次报价
     public function getLastMarketPrice(Request $request){
@@ -96,7 +125,7 @@ class DatasController extends BaseController
 
     // 发布报价信息
     public function reportMarketData(Request $Request){
-        $result = DataMarketDatas::where('id', $Request->id)->update(['display'=>1]);
+        $result = DataMarketDatas::where('id', $Request->id)->update(['display'=>1, 'updated_at'=>Carbon::now()]);
         return $this->responseBuild( null,'发布成功' );
     }
 
@@ -162,11 +191,12 @@ class DatasController extends BaseController
 
     // 添加付款方式
     public function createPaymentKind(Request $Request){
-        $result = DB::table('dara_payment_kind')->insertGetId(['payment_name'=>$Request->payment_name]);
+        $paymentName = $Request->payment_name;
+        $result = DB::table('dara_payment_kind')->insertGetId(['payment_name'=>$paymentName]);
         if($result!=0){
-            return $this->responseBuild( null,'添加成功');
+            return $this->responseMsg($msg='添加成功', $status='success', $data=['id'=>$result, 'payment_name'=>$paymentName]);
         }else{
-            $this->response->error( "删除失败",500);
+            return $this->responseMsg($msg='操作失败', $status='error', $data='null');
         }
     }
 
@@ -233,7 +263,7 @@ class DatasController extends BaseController
                 // 插入市场数据子表
                 DataMarketDatasChild::insertDatas($Request->id, $Request->formData);
                 // 插入或更新品牌资源表的平均值
-                $this->getBrandDataMean($Request);
+                // $this->getBrandDataMean($Request);
             });
             return $this->responseBuild(null, '添加报价成功' );
         }catch(Exception $error){
@@ -355,18 +385,18 @@ class DatasController extends BaseController
     // 添加运费价格
     public function createFreightPrice(Request $Request){
         // dd($Request->input());
-        $data = array('type'=>$Request->type, 
-            'transport_price'=>$Request->transport_price, 
+        $data = array('type'=>$Request->type,
+            'transport_price'=>$Request->transport_price,
             'transport_count'=>$Request->transport_count,
-            'transport_car_price'=>$Request->transport_car_price, 
-            'brand'=>$Request->brand, 
-            'size'=>json_encode($Request->size), 
+            'transport_car_price'=>$Request->transport_car_price,
+            'brand'=>$Request->brand,
+            'size'=>json_encode($Request->size),
             'origin_city'=>$Request->origin['city'],
             'origin_area'=>$Request->origin['area'],
-            'origin_address'=>$Request->origin['address'],  
-            'city'=>$Request->destination['city'], 
+            'origin_address'=>$Request->origin['address'],
+            'city'=>$Request->destination['city'],
             'area'=>$Request->destination['area'],
-            'address'=>$Request->destination['address'], 
+            'address'=>$Request->destination['address'],
             'remarks'=>$Request->remarks
         );
         // dd($data);

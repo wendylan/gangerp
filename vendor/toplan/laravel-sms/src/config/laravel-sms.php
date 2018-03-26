@@ -1,23 +1,25 @@
 <?php
 
+
 return [
     /*
     |--------------------------------------------------------------------------
-    | 内置路由的属性
+    | 内置路由
     |--------------------------------------------------------------------------
     |
-    | 如果是web应用建议'middleware'为'web',
-    | 如果是api应用(无session),建议'middleware'为'api'。
+    | 如果是 web 应用建议 middleware 为 ['web', ...]
+    | 如果是 api 应用建议 middleware 为 ['api', ...]
     |
     */
-    'routeAttributes' => [
+    'route' => [
+        'enable'     => true,
         'prefix'     => 'laravel-sms',
-        'middleware' => 'web',
+        'middleware' => ['web'],
     ],
 
     /*
     |--------------------------------------------------------------------------
-    | 可再次请求的最小时间间隔
+    | 请求间隔
     |--------------------------------------------------------------------------
     |
     | 单位：秒
@@ -30,19 +32,12 @@ return [
     | 数据验证管理
     |--------------------------------------------------------------------------
     |
-    | 设置从客户端传来的需要验证的数据字段(本库将其称为field),
-    | 并管理其启用状态(enable),默认静态验证规则(default)以及所有可用静态验证规则(staticRules)。
+    | 设置从客户端传来的需要验证的数据字段(`field`)
     |
-    |--------------------------------------------------------------------------
-    |
-    | field => settings: [
-    |     'isMobile'    => (bool)
-    |     'enable'      => (bool)
-    |     'default'     => (name)
-    |     'staticRules' => [
-    |         (name) => (rule)
-    |     ]
-    | ]
+    | - isMobile    是否为手机号字段
+    | - enable      是否开启验证
+    | - default     默认静态验证规则
+    | - staticRules 静态验证规则
     |
     */
     'validation' => [
@@ -63,20 +58,13 @@ return [
     | 验证码管理
     |--------------------------------------------------------------------------
     |
-    | length: Int
-    | 验证码长度
-    |
-    | validMinutes: Int
-    | 验证码有效时间长度，单位为分钟(minutes)
-    |
-    | repeatIfValid: Boolean
-    | 如果原验证码还有效，是否重复使用原验证码
-    |
-    | maxAttempts: Int
-    | 验证码最大尝试验证次数，超过该数值验证码自动失效，0或负数表示不启用本选项
+    | - length        验证码长度
+    | - validMinutes  验证码有效时间长度，单位为分钟
+    | - repeatIfValid 如果原验证码还有效，是否重复使用原验证码
+    | - maxAttempts   验证码最大尝试验证次数，超过该数值验证码自动失效，0或负数则不启用
     |
     */
-    'verifyCode' => [
+    'code' => [
         'length'        => 5,
         'validMinutes'  => 5,
         'repeatIfValid' => false,
@@ -88,27 +76,43 @@ return [
     | 验证码短信通用内容
     |--------------------------------------------------------------------------
     |
-    | 该值可以为以下两种情况之一:
-    |
-    | - 字符串
-    |   如: '【your app signature】亲爱的用户，您的验证码是%s。有效期为%s分钟，请尽快验证。'
-    |
-    | - 返回字符串的匿名函数
-    |   如: function ($code, $minutes, $input) {
-    |           return '...';
-    |       }
+    | 如需缓存配置，则需使用 `Toplan\Sms\SmsManger::closure($closure)` 方法进行配置
     |
     */
-    'verifySmsContent' => function ($code, $minutes, $input) {
-        return '【your app signature】亲爱的用户，您的验证码是' . $code . '。有效期为' . $minutes . '分钟，请尽快验证。';
+    'content' => function ($code, $minutes, $input) {
+        return '【signature】您的验证码是' . $code . '，有效期为' . $minutes . '分钟，请尽快验证。';
     },
+
+    /*
+    |--------------------------------------------------------------------------
+    | 验证码短信模版
+    |--------------------------------------------------------------------------
+    |
+    | 每项数据的值可以为以下三种之一:
+    |
+    | - 字符串/数字
+    |   如: 'YunTongXun' => '短信模版id'
+    |
+    | - 数组
+    |   如: 'Alidayu' => ['短信模版id', '语音模版id'],
+    |
+    | - 匿名函数
+    |   如: 'YunTongXun' => function ($input, $type) {
+    |           return $input['isRegister'] ? 'registerTempId' : 'commonId';
+    |       }
+    |
+    | 如需缓存配置，则需使用 `Toplan\Sms\SmsManger::closure($closure)` 方法对匿名函数进行配置
+    |
+    */
+    'templates' => [
+    ],
 
     /*
     |--------------------------------------------------------------------------
     | 模版数据管理
     |--------------------------------------------------------------------------
     |
-    | 每项数据的值可以为以下两种情况之一:
+    | 每项数据的值可以为以下两种之一:
     |
     | - 基本数据类型
     |   如: 'minutes' => 5
@@ -121,8 +125,10 @@ return [
     |           //不返回任何值，那么hello将会从模版数据中移除 :)
     |       }
     |
+    | 如需缓存配置，则需使用 `Toplan\Sms\SmsManger::closure($closure)` 方法对匿名函数进行配置
+    |
     */
-    'templateData' => [
+    'data' => [
         'code' => function ($code) {
             return $code;
         },
@@ -139,7 +145,7 @@ return [
     | driver:
     | 存储方式,是一个实现了'Toplan\Sms\Storage'接口的类的类名,
     | 内置可选的值有'Toplan\Sms\SessionStorage'和'Toplan\Sms\CacheStorage',
-    | 如果不填写driver,那么系统会自动根据内置路由的属性(routeAttributes)中middleware的配置值选择存储器driver:
+    | 如果不填写driver,那么系统会自动根据内置路由的属性(route)中middleware的配置值选择存储器driver:
     | - 如果中间件含有'web',会选择使用'Toplan\Sms\SessionStorage'
     | - 如果中间件含有'api',会选择使用'Toplan\Sms\CacheStorage'
     |
@@ -161,8 +167,8 @@ return [
     | 是否数据库记录发送日志
     |--------------------------------------------------------------------------
     |
-    | 若需开启此功能,需要先生成一个内置的'laravel_sms'表,
-    | 运行'php artisan migrate'命令可以自动生成。
+    | 若需开启此功能,需要先生成一个内置的'laravel_sms'表
+    | 运行'php artisan migrate'命令可以自动生成
     |
     */
     'dbLogs' => false,

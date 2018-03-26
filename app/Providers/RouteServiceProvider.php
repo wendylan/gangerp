@@ -47,6 +47,8 @@ class RouteServiceProvider extends ServiceProvider
 
          $this->mapLoginRoutes();
 
+         $this->mapOrtherRoutes();
+
         //
     }
 
@@ -60,7 +62,7 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapWebRoutes()
     {
         Route::group([
-            'middleware' => [ 'web' ,'isLogin'],
+            'middleware' => [ 'web','auth'],
             'namespace' => $this->namespace,
         ], function ($router) {
             require base_path('routes/web.php');
@@ -122,6 +124,15 @@ class RouteServiceProvider extends ServiceProvider
             'namespace' => $this->namespace
         ], function ($router) {
             require base_path('routes/login.php');
+        });
+    }
+
+    public function mapOrtherRoutes(){
+        Route::group([
+            'middleware' => 'api',
+            'namespace' => $this->namespace
+        ], function ($router) {
+            require base_path('routes/other.php');
         });
     }
 

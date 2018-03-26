@@ -1,5 +1,10 @@
 {
 	"nameList":[
-		{"name":"万钢","other":"桂万钢"}
+		{"name":"万钢","other":"桂万钢"},
+		{"name":"粤钢","other":"珠海粤钢"},
+		{"name":"腾达","other":"龙川腾达"},
+		{"name":"达味","other":"达味马鞍"},
+		{"name":"宝华","other":"中山宝华"},
+		{"name":"桂宝","other":"贵港桂宝"}
 	]
 }

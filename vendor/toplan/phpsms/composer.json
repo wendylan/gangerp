@@ -1,9 +1,8 @@
 {
   "name": "toplan/phpsms",
-  "description": "sms send library for php, support the main SMS service provider.",
+  "description": "Probably the most intelligent, elegant sms send library in php",
   "license": "MIT",
-  "version": "1.6.0",
-  "keywords": ["sms", "php sms", "phpsms", "sms library for php"],
+  "keywords": ["sms", "php", "phpsms", "sms library"],
   "authors": [
     {
       "name": "toplan",
@@ -12,8 +11,8 @@
   ],
   "require": {
     "php": ">=5.4.0",
-    "toplan/task-balancer": ">=0.4.2",
-    "jeremeamia/SuperClosure": "~2.2.0"
+    "toplan/task-balancer": "~0.5",
+    "jeremeamia/SuperClosure": "~2.2"
   },
   "require-dev": {
     "phpunit/phpunit": "~4.0"
@@ -22,7 +21,8 @@
     "psr-4": {
       "Toplan\\PhpSms\\": [
         "src/phpsms/",
-        "src/phpsms/agents/"
+        "src/phpsms/agents/",
+        "src/phpsms/interfaces/"
       ],
       "Toplan\\PhpSms\\Facades\\": [
         "src/phpsms/facades/"
@@ -36,6 +36,5 @@
     "classmap": [
       "tests/"
     ]
-  },
-  "minimum-stability" : "dev"
+  }
 }

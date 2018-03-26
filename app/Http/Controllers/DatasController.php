@@ -272,7 +272,7 @@ class DatasController extends Controller
     public function createPaymentKind(Request $Request){
         $result = DB::table('dara_payment_kind')->insertGetId(['payment_name'=>$Request->payment_name]);
         if($result!=0){
-            return $this->responseMsg($msg='添加成功', $status='success', $data=$result);
+            return $this->responseMsg($msg='添加成功', $status='success', $data=$newData);
         }else{
             return $this->responseMsg($msg='操作失败', $status='error', $data='null');
         }
@@ -973,21 +973,18 @@ class DatasController extends Controller
     }
 
     public function updateCatchData(Request $Request){
-        $time = $Request->time;
-        $handle = fopen("./websteel/websteel/catchData/updateData.json", "r");
-        $data = json_decode(fread($handle,filesize("./websteel/websteel/catchData/updateData.json")));
-        fclose($handle);
-
+        $time = $Request->date;
+        $datas = $Request->datas;
         $isSaved = empty(DB::table('data_web_price_date')->where('date', $time)->get()->toArray());
         if($isSaved){
             if( DB::table('data_web_price_date')->insert(["date"=>$time]) ){
             $insertData = [];
-            foreach ($data as $key => $value) {
+            foreach ($datas as $key => $value) {
                 $insertData[] = ['file_name'=>$time, "product"=>$value[0], "type"=>$value[1], "material"=>$value[2], "brands"=>$value[3], "web_price"=>$value[4], "price_change"=>$value[5], "source_states"=>$value[6]];
             }
-            DB::table('data_web_price')->insert($insertData);
+            
 
-                return "OK";
+                return DB::table('data_web_price')->insert($insertData);
             }else{
                 return "ERROR";
             }

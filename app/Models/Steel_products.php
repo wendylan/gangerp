@@ -2,6 +2,7 @@
 
 namespace App\Models;
 use DB;
+use Log;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Model;
 use Backpack\CRUD\CrudTrait;
@@ -79,6 +80,64 @@ class Steel_products extends Model
 		$material = $product->select('material')->get();
 		return array('brand' =>$brand ,'cate_spec' =>$cate_spec ,'size' =>$size ,'material' =>$material );
 	}
+	public static function getBrandGroupSpec($brands){
+		$_this = new steel_products();
+		$brandSpecGruop = [];
+		$pickup = collect();
+		foreach ($brands as $key => $value) {
+			$product = DB::table('steel_products');
+			$brandSpec = $product->where('brand',$value)->select('cate_spec','size','material')->get();
+			$pickup = $pickup->merge($brandSpec->toArray());
+		}
+		$pickup = $pickup->unique();
+		$result = $_this->toTree($pickup,$_this);
+		return $result;
+	}
+
+	public function toTree($data,$_this){
+		$tree=[];
+		foreach ($data as $value) {
+			if($_this->isNameExist($value->cate_spec,$tree)){
+				$cate_spec_key = $_this->getDataKey($value->cate_spec,$tree);
+				$cate_spec = $tree[$cate_spec_key];
+				if ($_this->isNameExist($value->material,$cate_spec['material'])) {
+					$material_key = $_this->getDataKey($value->material,$cate_spec['material']);
+					$material = $cate_spec['material'][$material_key];
+					if($_this->isNameExist($value->size,$material['size'])){
+						continue;
+					}else{
+						array_push($tree[$cate_spec_key]['material'][$material_key]['size'],array('name'=>$value->size));
+					}
+				}else{
+					array_push($tree[$cate_spec_key]['material'],array('name'=>$value->material,'size'=>array(['name'=>$value->size])));
+				}
+			}else{
+				array_push($tree,array('name'=>$value->cate_spec,'material'=>array(['name'=>$value->material,'size'=>array(['name'=>$value->size])])));
+			}
+		}
+		return $tree;
+	}
+
+
+
+	public function isNameExist($name,$data){
+		// Log::info($data);
+		foreach ($data as $value) {
+			if ($value['name']==$name) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public function  getDataKey($name,$data){
+		foreach ($data as $key=>$value) {
+			if ($value['name']==$name) {
+				return $key;
+			}
+		}
+		return null;
+	}
 	/*
 	|--------------------------------------------------------------------------
 	| RELATIONS
@@ -86,7 +145,7 @@ class Steel_products extends Model
 	*/
 	// public function factorys()
     // {
-    //     return $this->belongsTo('App\Models\Steel_factory', 'brand_id');
+    //     return $_this->belongsTo('App\Models\Steel_factory', 'brand_id');
     // }
 
 	/*

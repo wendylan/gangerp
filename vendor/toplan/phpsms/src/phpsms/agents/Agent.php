@@ -9,22 +9,25 @@ abstract class Agent
     const CODE = 'code';
 
     /**
-     * The configuration information of agent.
+     * The configuration information.
      *
      * @var array
      */
     protected $config = [];
 
     /**
+     * The custom params of request.
+     *
+     * @var array
+     */
+    protected $params = [];
+
+    /**
      * The result data.
      *
      * @var array
      */
-    protected $result = [
-        self::SUCCESS => false,
-        self::INFO    => null,
-        self::CODE    => 0,
-    ];
+    protected $result = [];
 
     /**
      * Constructor.
@@ -33,15 +36,28 @@ abstract class Agent
      */
     public function __construct(array $config = [])
     {
+        $this->reset();
         $this->config($config);
     }
 
     /**
-     * Get or set the configuration information of agent.
+     * Reset states.
+     */
+    public function reset()
+    {
+        $this->result = [
+            self::SUCCESS => false,
+            self::INFO    => null,
+            self::CODE    => 0,
+        ];
+    }
+
+    /**
+     * Get or set the configuration information.
      *
-     * @param mixed $key
-     * @param mixed $value
-     * @param bool  $override
+     * @param string|array $key
+     * @param mixed        $value
+     * @param bool         $override
      *
      * @return mixed
      */
@@ -55,78 +71,131 @@ abstract class Agent
     }
 
     /**
+     * Get or set the custom params.
+     *
+     * @param string|array $key
+     * @param mixed        $value
+     * @param bool         $override
+     *
+     * @return mixed
+     */
+    public function params($key = null, $value = null, $override = false)
+    {
+        if (is_array($key) && is_bool($value)) {
+            $override = $value;
+        }
+
+        return Util::operateArray($this->params, $key, $value, null, null, $override);
+    }
+
+    /**
      * SMS send process.
      *
      * @param       $to
      * @param       $content
      * @param       $tempId
-     * @param array $tempData
+     * @param array $data
+     * @param array $params
      */
-    abstract public function sendSms($to, $content, $tempId, array $tempData);
+    public function sendSms($to, $content = null, $tempId = null, array $data = [], array $params = [])
+    {
+        $this->reset();
+        $this->params($params, true);
+        $to = $this->formatMobile(Util::formatMobiles($to));
+
+        if ($tempId && $this instanceof TemplateSms) {
+            $this->sendTemplateSms($to, $tempId, $data);
+        } elseif ($content && $this instanceof ContentSms) {
+            $this->sendContentSms($to, $content);
+        }
+    }
 
     /**
-     * Content SMS send process.
-     *
-     * @param $to
-     * @param $content
-     */
-    abstract public function sendContentSms($to, $content);
-
-    /**
-     * Template SMS send process.
+     * Voice send process.
      *
      * @param       $to
+     * @param       $content
      * @param       $tempId
-     * @param array $tempData
-     */
-    abstract public function sendTemplateSms($to, $tempId, array $tempData);
-
-    /**
-     * Voice verify send process.
-     *
-     * @param       $to
+     * @param array $data
      * @param       $code
-     * @param       $tempId
-     * @param array $tempData
+     * @param       $fileId
+     * @param array $params
      */
-    abstract public function voiceVerify($to, $code, $tempId, array $tempData);
+    public function sendVoice($to, $content = null, $tempId = null, array $data = [], $code = null, $fileId = null, array $params = [])
+    {
+        $this->reset();
+        $this->params($params, true);
+        $to = $this->formatMobile(Util::formatMobiles($to));
+
+        if ($tempId && $this instanceof TemplateVoice) {
+            $this->sendTemplateVoice($to, $tempId, $data);
+        } elseif ($fileId && $this instanceof FileVoice) {
+            $this->sendFileVoice($to, $fileId);
+        } elseif ($code && $this instanceof VoiceCode) {
+            $this->sendVoiceCode($to, $code);
+        } elseif ($content && $this instanceof ContentVoice) {
+            $this->sendContentVoice($to, $content);
+        }
+    }
 
     /**
-     * Http post request.
+     * Formatting a mobile number from the list of mobile numbers.
      *
+     * @param array $list
+     *
+     * @return string
+     */
+    public function formatMobile(array $list)
+    {
+        return implode(',', array_unique(array_map(function ($value) {
+            return is_array($value) ? "{$value['number']}" : $value;
+        }, $list)));
+    }
+
+    /**
      * @codeCoverageIgnore
      *
      * @param       $url
-     * @param array $query
-     * @param       $port
+     * @param array $params
+     * @param array $opts
      *
-     * @return mixed
+     * @return array
      */
-    public static function sockPost($url, $query, $port = 80)
+    public function curlPost($url, array $params = [], array $opts = [])
     {
-        $data = '';
-        $info = parse_url($url);
-        $fp = fsockopen($info['host'], $port, $errno, $errstr, 30);
-        if (!$fp) {
-            return $data;
+        $options = [
+            CURLOPT_POST    => true,
+            CURLOPT_URL     => $url,
+        ];
+        foreach ($opts as $key => $value) {
+            if ($key !== CURLOPT_POST && $key !== CURLOPT_URL) {
+                $options[$key] = $value;
+            }
         }
-        $head = 'POST ' . $info['path'] . " HTTP/1.0\r\n";
-        $head .= 'Host: ' . $info['host'] . "\r\n";
-        $head .= 'Referer: http://' . $info['host'] . $info['path'] . "\r\n";
-        $head .= "Content-type: application/x-www-form-urlencoded\r\n";
-        $head .= 'Content-Length: ' . strlen(trim($query)) . "\r\n";
-        $head .= "\r\n";
-        $head .= trim($query);
-        $write = fwrite($fp, $head);
-        $header = '';
-        while ($str = trim(fgets($fp, 4096))) {
-            $header .= $str;
-        }
-        while (!feof($fp)) {
-            $data .= fgets($fp, 4096);
+        if (!array_key_exists(CURLOPT_POSTFIELDS, $options)) {
+            $options[CURLOPT_POSTFIELDS] = $this->params($params);
         }
 
-        return $data;
+        return self::curl($options);
+    }
+
+    /**
+     * @codeCoverageIgnore
+     *
+     * @param       $url
+     * @param array $params
+     * @param array $opts
+     *
+     * @return array
+     */
+    public function curlGet($url, array $params = [], array $opts = [])
+    {
+        $params = $this->params($params);
+        $queryStr = http_build_query($params);
+        $opts[CURLOPT_POST] = false;
+        $opts[CURLOPT_URL] = $queryStr ? "$url?$queryStr" : $url;
+
+        return self::curl($opts);
     }
 
     /**
@@ -134,34 +203,29 @@ abstract class Agent
      *
      * @codeCoverageIgnore
      *
-     * @param string   $url    [请求的URL地址]
-     * @param array    $params [请求的参数]
-     * @param int|bool $isPost [是否采用POST形式]
+     * @param array $opts curl options
      *
      * @return array ['request', 'response']
-     *               request:是否请求成功
-     *               response:响应数据
+     *               request: Whether request success.
+     *               response: Response data.
      */
-    public static function curl($url, array $params = [], $isPost = false)
+    public static function curl(array $opts = [])
     {
-        $request = true;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22');
+        curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        if ($isPost) {
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-            curl_setopt($ch, CURLOPT_URL, $url);
-        } else {
-            $params = http_build_query($params);
-            curl_setopt($ch, CURLOPT_URL, $params ? "$url?$params" : $url);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        foreach ($opts as $key => $value) {
+            curl_setopt($ch, $key, $value);
         }
+
         $response = curl_exec($ch);
-        if ($response === false) {
-            $request = false;
+        $request = $response !== false;
+        if (!$request) {
             $response = curl_getinfo($ch);
         }
         curl_close($ch);
@@ -170,7 +234,7 @@ abstract class Agent
     }
 
     /**
-     * Set/get result data.
+     * Get or set the result data.
      *
      * @param $name
      * @param $value
@@ -184,9 +248,9 @@ abstract class Agent
         }
         if (array_key_exists($name, $this->result)) {
             if ($value === null) {
-                return $this->result["$name"];
+                return $this->result[$name];
             }
-            $this->result["$name"] = $value;
+            $this->result[$name] = $value;
         }
     }
 

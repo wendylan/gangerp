@@ -113,4 +113,12 @@ class centerController extends Controller
         }
         return Redirect::to('/center/account-safe');
     }
+
+    public function authAccount(Request $request){
+
+    }
+
+    public function authAccountMobile(Request $request){
+
+    }
 }

@@ -180,14 +180,15 @@ return [
         /*
         * Other Service Providers...
         */
+        Maatwebsite\Excel\ExcelServiceProvider::class,
 
-        // Toplan\PhpSms\PhpSmsServiceProvider::class,
-        // Toplan\Sms\SmsManagerServiceProvider::class,
+        Toplan\PhpSms\PhpSmsServiceProvider::class,
+        Toplan\Sms\SmsManagerServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
         Hootlex\Moderation\ModerationServiceProvider::class,
-        Mews\Captcha\CaptchaServiceProvider::class,
+        // Mews\Captcha\CaptchaServiceProvider::class,
         Barryvdh\Cors\ServiceProvider::class,
-        
+
         //web socket.io
         // App\Providers\BroadcastServiceProvider::class,
 
@@ -239,6 +240,8 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        
+
         /*
         * Backpack Aliases...
         */
@@ -250,11 +253,12 @@ return [
        /*
         * Other Aliases...
         */
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
 
-        // 'PhpSms' => Toplan\PhpSms\Facades\Sms::class,
-        // 'SmsManager' => Toplan\Sms\Facades\SmsManager::class,
+        'PhpSms' => Toplan\PhpSms\Facades\Sms::class,
+        'SmsManager' => Toplan\Sms\Facades\SmsManager::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
-        'Captcha' => Mews\Captcha\Facades\Captcha::class,
+        // 'Captcha' => Mews\Captcha\Facades\Captcha::class,
 
     ],
 

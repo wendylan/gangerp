@@ -188,10 +188,6 @@
 			margin:auto;
 		}
 
-		table tr{
-			background:#FFF;
-			border-radius:10px;
-		}
 		.table-box{
 			width:100%;
 			height:auto;
@@ -200,9 +196,9 @@
 			overflow:hidden;
 			background:#FFF;
 		}
-		.thead{
+		/*.thead{
 			background:lightgray;
-		}
+		}*/
 		.bg-success{
 			padding:15px;
 			width:100%;
@@ -293,7 +289,58 @@
 		.title{
 			text-align: center;
 		}
+      /*  table{
+            border :solid 1px #DEDEDE;
+            font-size:14px;
+        }
+        table thead th{
+            background: #f5f7fa;
+        }
 
+        table tr td{
+            padding:5px;
+            text-align:center;
+            border-top :solid 1px #DEDEDE;
+        }
+        table tbody tr th{
+            padding:8px;
+            text-align:center;
+            border-bottom :solid 1px #DEDEDE;
+        }
+        table tbody tr:hover{
+            background-color:#e0e6ed;
+        }
+		table tr{
+			background:#FFF;
+			border-radius:10px;
+		}
+        */
+        table{
+			margin-top: 20px;
+			width: 100%;
+		    table-layout: fixed;
+		    border-collapse:collapse;
+			border:1px solid #e0e6ed;
+			text-align:center;
+			font-size:14px;
+		}
+		thead{
+			background-color:#eef1f6;
+		}
+		thead th{
+			text-align: center;
+			padding:10px 0px;
+			border:1px solid #dfe6ec;
+		}
+		table td{
+			padding:10px;
+			border:none;
+			border-bottom:1px solid #e0e6ed;
+			border-right:1px solid #e0e6ed;
+		}
+		table tbody tr:hover{
+			background-color: #eff2f7;
+		}
 	</style>
 </head>
 
@@ -317,31 +364,33 @@
 					<h3>1，按总价比价</h3>
 					<table class="table table-bordered " width="100%" cellpadding="1" cellspacing="1" border="1">
 						<!-- 一级表头 -->
-						<tr class="thead">
-							<th rowspan="2">序号</th>
-							<th rowspan="2">品名</th>
-							<th rowspan="2">规格</th>
-							<th rowspan="2">材质</th>
-							<th rowspan="2">重量(t)</th>
-							{{--<th colspan="{{2*count($cids)}}">综合单价(元/吨)</th>--}}
-							@foreach ($cids as $cid)
-							{{-- <th colspan={{ count($cids)==1?count($cids)+1 : count($cids)-1 }}>{{get_company_name_by_uid($cid)}}</th>  --}}
-							<th colspan="2">{{get_company_name_by_uid($cid)}}</th>
-							{{-- <th colspan='2'>公司B</th>
-							<th colspan='2'>公司C</th> --}}
-							@endforeach
-						</tr>
-						<!-- 二级表头 -->
+						<thead>
+							<tr class="thead">
+								<th rowspan="2">序号</th>
+								<th rowspan="2">品名</th>
+								<th rowspan="2">规格</th>
+								<th rowspan="2">材质</th>
+								<th rowspan="2">重量(t)</th>
+								{{--<th colspan="{{2*count($cids)}}">综合单价(元/吨)</th>--}}
+								@foreach ($cids as $cid)
+								{{-- <th colspan={{ count($cids)==1?count($cids)+1 : count($cids)-1 }}>{{get_company_name_by_uid($cid)}}</th>  --}}
+								<th colspan="2">{{get_company_name_by_uid($cid)}}</th>
+								{{-- <th colspan='2'>公司B</th>
+								<th colspan='2'>公司C</th> --}}
+								@endforeach
+							</tr>
+							<!-- 二级表头 -->
 
-						<tr class="thead">
-							@foreach ($cids as $cid)
-								<td>品牌</td>
-								<td>综合单价</td>
-							@endforeach
-						</tr>
+							<tr class="thead">
+								@foreach ($cids as $cid)
+									<td>品牌</td>
+									<td>综合单价</td>
+								@endforeach
+							</tr>
+						</thead>
 						<?php $fcall=array();$count=0;?>
-						
-						
+
+
 						@foreach ($firstq_prices as $fk=>$fv)
 						<?php
 						$fprices=explode(',',$fv->fprice);
@@ -360,7 +409,7 @@
 							<td>{{$fv->amount}}</td>
 							@for($i = 0; $i < count($fbrands); $i++)
 								<td>{{get_brand_name_by_id($fbrands[$i])}}</td>
-								<?php 
+								<?php
 								$fd_prices[$i]=isset($fd_prices[$i])?$fd_prices[$i]:0;
 								$fs_prices[$i]=isset($fs_prices[$i])?$fs_prices[$i]:0;
 								$fm_prices[$i]=isset($fm_prices[$i])?$fm_prices[$i]:0;
@@ -376,7 +425,7 @@
 							@endforeach
 
 
-							{{-- {{dd($fcall)}} 
+							{{-- {{dd($fcall)}}
 							@if($count==0)
 								<td rowspan="{{count($cids)}}">{{$fv->mark}}</td>
 							@endif--}}
@@ -407,21 +456,23 @@
 				<div class="table-box first-price-2">
 					<h3>2，按品牌比价</h3>
 					<table class="table table-bordered " width="100%" cellpadding="1" cellspacing="1" border="1">
-						<tr class="thead">
-							<th rowspan="2">品牌</th>
-							<th rowspan="2">品名</th>
-							<th rowspan="2">规格</th>
-							<th rowspan="2">材质</th>
-							<th rowspan="2">重量</th>
-							<th colspan='{{count($order_companys)}}'>首次报价综合单价(元/吨)</th>
-							<th rowspan="2">我的钢铁网今日价格</th>
-						</tr>
+						<thead>
+							<tr class="thead">
+								<th rowspan="2">品牌</th>
+								<th rowspan="2">品名</th>
+								<th rowspan="2">规格</th>
+								<th rowspan="2">材质</th>
+								<th rowspan="2">重量</th>
+								<th colspan='{{count($order_companys)}}'>首次报价综合单价(元/吨)</th>
+								<th rowspan="2">我的钢铁网今日价格</th>
+							</tr>
 
-						<tr class="thead">
-							@foreach ($order_companys as $c)
-							<th colspan='1'>{{get_company_name_by_uid($c->who)}}</th>
-							@endforeach
-						</tr>
+							<tr class="thead">
+								@foreach ($order_companys as $c)
+								<th colspan='1'>{{get_company_name_by_uid($c->who)}}</th>
+								@endforeach
+							</tr>
+						</thead>
 						{{-- {{dd($order_companys)}} --}}
 						@foreach ($fqb as $fqv)
 
@@ -435,12 +486,16 @@
 									<td>{{get_size_by_id($vv->size_cid)}}</td>
 									<td>{{get_material_by_id($vv->material_cid)}}</td>
 									<td>{{$vv->amount}}</td>
-										<?php $itemps=explode(',',$vv->fprice); $cids=explode(',',$vv->cids);$cps=array_combine($cids,$itemps);?>
+										<?php 
+											$itemps=explode(',',$vv->fprice); 
+											$cids=explode(',',$vv->cids);
+											$cps=array_combine($cids,$itemps);
+										?>
 										@foreach($order_companys as $c)
 											@if(empty($cps[$c->who]))
 												<td>-</td>
 											@else
-												<?php 
+												<?php
 													$vv->s_price=empty($vv->s_price)?0:$vv->s_price;
 													$vv->d_price=empty($vv->d_price)?0:$vv->d_price;
 													$vv->m_price=empty($vv->m_price)?0:$vv->m_price;
@@ -456,15 +511,17 @@
 												<td>-</td>
 											@endfor
 										@endif --}}
-									<td>{{$vv->net_price}}</td>
+									<td>{{$vv->fprice+80}}</td>
 								</tr>
 							@endforeach
 						@endforeach
 						<tr>
 							<td colspan="5">备注</td>
+							<!-- <td colspan="1">{{$vv->mark}}</td> -->
+							<!-- <td colspan="1">{{$vv->mark}}</td> -->
 							<td colspan="1">{{$vv->mark}}</td>
 							<td colspan="1">{{$vv->mark}}</td>
-							<td colspan="1">{{$vv->mark}}</td>
+							<td>/</td>
 						</tr>
 						<tr>
 							<td colspan="5">总价</td>
@@ -493,12 +550,14 @@
 					<h3>1，统一比价</h3>
 					<table class="table table-bordered" width="100%" cellpadding="1" cellspacing="1" border="1">
 						<!-- 一级表头 -->
-						<tr class="thead">
-							{{-- <th>序号</th>  --}}
-							<th>投标单位</th>
-							<th colspan='2'>综合单价(元/吨)</th>
-							<th>备注</th>
-						</tr>
+						<thead>
+							<tr class="thead">
+								{{-- <th>序号</th>  --}}
+								<th>投标单位</th>
+								<th colspan='2'>综合单价(元/吨)</th>
+								<th>备注</th>
+							</tr>
+						</thead>
 						@foreach($firstq_prices as $cid=>$price)
 						<tr>
 							<th>{{get_company_name_by_uid($cid)}}</th>
@@ -519,20 +578,22 @@
 					<h3>分品牌比价:</h3>
 					<table class="table table-bordered" width="100%" cellpadding="1" cellspacing="1" border="1">
 						<!-- 一级表头 -->
-						<tr class="thead">
-							<th rowspan="2">序号</th>
-							<th rowspan="2">品牌</th>
-							<th colspan="{{count($order_companys)+1}}">综合单价(元/吨)</th>
-							<th rowspan="2">今日我的钢铁网价格</th>
-							<th rowspan="2">备注</th>
-						</tr>
-						<!-- 二级表头 -->
-						{{-- <tr class="thead">
-							<th>网价基础</th>
-							@foreach ($order_companys as $c)
-							<th>{{get_company_name_by_uid($c->who)}}</th>
-							@endforeach
-						</tr> --}}
+						<thead>
+							<tr class="thead">
+								<th rowspan="2">序号</th>
+								<th rowspan="2">品牌</th>
+								<th colspan="{{count($order_companys)+1}}">综合单价(元/吨)</th>
+								<th rowspan="2">今日我的钢铁网价格</th>
+								<th rowspan="2">备注</th>
+							</tr>
+							<!-- 二级表头 -->
+							{{-- <tr class="thead">
+								<th>网价基础</th>
+								@foreach ($order_companys as $c)
+								<th>{{get_company_name_by_uid($c->who)}}</th>
+								@endforeach
+							</tr> --}}
+						</thead>
 
 						<tr class="thead">
 							<th>网价基础</th>
@@ -589,20 +650,22 @@
 				<div class="table-box more-table">
 					<h3>1，批次比价</h3>
 					<table class="table table-bordered" width="100%" cellpadding="1" cellspacing="1" border="1">
-						<tr class="_thead">
-							<th>序号</th>
-							<th>投标单位</th>
-							<th>品名</th>
-							<th>规格</th>
-							<th>材质</th>
-							<th>品牌</th>
-							<th>重量(t)</th>
-							<th>首轮报价(元/吨)</th>
-							<th>二次报价(元/吨)</th>
-							{{-- <th>二次报价最低单价</th> --}}
-							<th>我的钢铁网当日网价</th>
-							<th>总价</th>
-						</tr>
+						<thead>
+							<tr>
+								<th>序号</th>
+								<th>投标单位</th>
+								<th>品名</th>
+								<th>规格</th>
+								<th>材质</th>
+								<th>品牌</th>
+								<th>重量(t)</th>
+								<th>首轮报价(元/吨)</th>
+								<th>二次报价(元/吨)</th>
+								{{-- <th>二次报价最低单价</th> --}}
+								<th>我的钢铁网当日网价</th>
+								<th>总价</th>
+							</tr>
+						</thead>
 						<?php $i=1;?>
 						@foreach($ttprices as $k=>$items)
 									@foreach($items['pics'] as $j=>$item)
@@ -635,20 +698,21 @@
 				<div class="table-box brands-table">
 					<h3>2，批次招标分品牌比价</h3>
 					<table class="table table-bordered " width="100%" cellpadding="1" cellspacing="1" border="1">
-						<tr class="_thead">
-							<th rowspan="2">品牌</th>
-							<th rowspan="2">品名</th>
-							<th rowspan="2">规格</th>
-							<th rowspan="2">材质</th>
-							<th rowspan="2">重量</th>
-							<th colspan='{{count($sorder_companys)}}'>二次报价综合单价(元/吨)</th>
-							<th rowspan="2">我的钢铁网今日价格</th>
-							<th rowspan="2">备注</th>
-						</tr>
+						<thead>
+							<tr>
+								<th rowspan="2">品牌</th>
+								<th rowspan="2">品名</th>
+								<th rowspan="2">规格</th>
+								<th rowspan="2">材质</th>
+								<th rowspan="2">重量</th>
+								<th colspan='{{count($sorder_companys)}}'>二次报价综合单价(元/吨)</th>
+								<th rowspan="2">我的钢铁网今日价格</th>
+								<th rowspan="2">备注</th>
+							</tr>
 
 
 
-						<tr class="_thead">
+						<tr >
 							@if(!empty($sorder_companys))
 								@foreach ($sorder_companys as $c)
 									<th colspan='1'>{{get_company_name_by_uid($c->who)}}</th>
@@ -656,6 +720,7 @@
 							@endif
 
 						</tr>
+						</thead>
 
 
 						@if($is_any_sqp)
@@ -674,7 +739,7 @@
 										$scps = array_combine(array_intersect_key($cids, $itemps), array_intersect_key($itemps, $cids));
 											//$scps=array_combine2($cids,$itemps);
 										?>
-										
+
 										@foreach($sorder_companys as $c)
 											@if(empty($scps[$c->who]))
 												<td>-</td>
@@ -705,24 +770,27 @@
 				<!-- 统一二次比价 -->
 				<h3>1，统一二次比价</h3>
 				<table class="table table-bordered" width="100%" cellpadding="1" cellspacing="1" border="1">
-					<tr class="thead">
-						{{-- <th rowspan='2'>序号</th>  --}}
-						<th rowspan='2'>投标单位</th>
-						<th colspan="2">综合单价(元/吨)</th>
-						<th rowspan='2'>备注</th>
-					</tr>
-					<tr class="thead">
-						<th>网价基础</th>
-						<th>二次议价</th>
-					</tr>
-					@foreach($sq_prices_t1_ok as $scid=>$sprice)
-						<tr>
-							<th>{{get_company_name_by_uid($scid)}}</th>
-							<th>{{get_qtype_name($bid->qtype)}}</th>
-							<th>{{$sprice=empty($sprice)?'暂无报价':$sprice}}</th>
-							<th>无</th>
+					<thead>
+						<tr class="thead">
+							{{-- <th rowspan='2'>序号</th>  --}}
+							<th rowspan='2'>投标单位</th>
+							<th colspan="2">综合单价(元/吨)</th>
+							<th rowspan='2'>备注</th>
 						</tr>
-					@endforeach
+						<tr class="thead">
+							<th>网价基础</th>
+							<th>二次议价</th>
+						</tr>
+					
+						@foreach($sq_prices_t1_ok as $scid=>$sprice)
+							<tr>
+								<th>{{get_company_name_by_uid($scid)}}</th>
+								<th>{{get_qtype_name($bid->qtype)}}</th>
+								<th>{{$sprice=empty($sprice)?'暂无报价':$sprice}}</th>
+								<th>无</th>
+							</tr>
+						@endforeach
+					</thead>
 
 				</table>
 				@else
@@ -730,22 +798,24 @@
 				<h3>1，分品牌比价</h3>
 				<table class="table table-bordered" width="100%" cellpadding="1" cellspacing="1" border="1">
 					<!-- 一级表头 -->
-						<tr class="thead">
-							<th rowspan="2">序号</th>
-							<th rowspan="2">品牌</th>
-							<th colspan="{{count($sorder_companys)+1}}">综合单价(元/吨)</th>
-							<th rowspan="2">今日我的钢铁网价格</th>
-							<th rowspan="2">备注</th>
-						</tr>
-						<!-- 二级表头 -->
-						<tr class="thead">
-							<th>网价基础</th>
-							@if(!empty($sqbcids))
-								@foreach ($sqbcids as $c)
-									<th>{{get_company_name_by_uid($c)}}</th>
-								@endforeach
-							@endif
-						</tr>
+						<thead>
+							<tr class="thead">
+								<th rowspan="2">序号</th>
+								<th rowspan="2">品牌</th>
+								<th colspan="{{count($sorder_companys)+1}}">综合单价(元/吨)</th>
+								<th rowspan="2">今日我的钢铁网价格</th>
+								<th rowspan="2">备注</th>
+							</tr>
+							<!-- 二级表头 -->
+							<tr class="thead">
+								<th>网价基础</th>
+								@if(!empty($sqbcids))
+									@foreach ($sqbcids as $c)
+										<th>{{get_company_name_by_uid($c)}}</th>
+									@endforeach
+								@endif
+							</tr>
+						</thead>
 						<?php $sfqk=0;?>
 						@foreach ($sqb as $fvi=>$sfqv)
 							@foreach ($sfqv as $vi=>$vv)
@@ -836,14 +906,16 @@
 					<!-- 统一议价 -->
 					@elseif ($bid->type == 1)
 					<table class="table table-bordered" width="100%" cellpadding="1" cellspacing="1" border="1">
-						<tr class="thead">
-							<th colspan='1'>综合单价(元/吨)</th>
-							{{-- <th rowspan="2">备注</th>  --}}
-						</tr>
-						<tr class="thead">
-							<th>首轮报价</th>
-							{{-- <th>二次议价</th> --}}
-						</tr>
+						<thead>
+							<tr class="thead">
+								<th colspan='1'>综合单价(元/吨)</th>
+								{{-- <th rowspan="2">备注</th>  --}}
+							</tr>
+							<tr class="thead">
+								<th>首轮报价</th>
+								{{-- <th>二次议价</th> --}}
+							</tr>
+						</thead>
 						<tr>
 						@foreach ($cprice as $k=>$v)
 							<td>{{get_updown_name($v->up_down)}}{{$v->price}}元/吨</td>
@@ -855,17 +927,19 @@
 					@else
 					<!-- 分品牌议价 -->
 					<table class="table table-bordered" width="100%" cellpadding="1" cellspacing="1" border="1">
-						<tr class="thead">
-							<th rowspan="2">品牌</th>
-							{{-- <th rowspan="2">品名</th>  --}}
-							<th colspan='1'>综合单价(元/吨)</th>
-							<th rowspan="2">备注</th>
-						</tr>
-						<tr class="thead">
-							{{-- <th>网价基础</th> --}}
-							<th>首轮报价</th>
-							{{-- <th>二次议价</th> --}}
-						</tr>
+						<thead>
+							<tr class="thead">
+								<th rowspan="2">品牌</th>
+								{{-- <th rowspan="2">品名</th>  --}}
+								<th colspan='1'>综合单价(元/吨)</th>
+								<th rowspan="2">备注</th>
+							</tr>
+							<tr class="thead">
+								{{-- <th>网价基础</th> --}}
+								<th>首轮报价</th>
+								{{-- <th>二次议价</th> --}}
+							</tr>
+						</thead>
 						@foreach ($cprice as $k=>$v)
 							<tr>
 								<td>{{get_brand_name_by_id($v->brand_id)}}</td>
@@ -911,19 +985,21 @@
 					<!-- 批次比价 -->
 					@if ($bid->type == 0)
 					<table class="table table-bordered" width="100%" cellpadding="1" cellspacing="1" border="1">
-						<tr class="thead">
-							<th>序号</th>
-							<th>品名</th>
-							<th>规格</th>
-							<th>材质</th>
-							<th>品牌</th>
-							<th>重量(t)</th>
-							<th>首轮报价(元/吨)</th>
-							<th>二次报价(元/吨)</th>
-							{{-- <th>品牌</th>
-							<th>总价</th> --}}
-							<th>备注</th>
-						</tr>
+						<thead>
+							<tr class="thead">
+								<th>序号</th>
+								<th>品名</th>
+								<th>规格</th>
+								<th>材质</th>
+								<th>品牌</th>
+								<th>重量(t)</th>
+								<th>首轮报价(元/吨)</th>
+								<th>二次报价(元/吨)</th>
+								{{-- <th>品牌</th>
+								<th>总价</th> --}}
+								<th>备注</th>
+							</tr>
+						</thead>
 						@foreach ($qp as $kq=>$qitem)
 							<tr>
 						    <td>{{$kq+1}}</td>
@@ -941,16 +1017,18 @@
 					@elseif ($bid->type == 1)
 					<!-- 统一比价 -->
 					<table class="table table-bordered" width="100%" cellpadding="1" cellspacing="1" border="1">
-						<tr class="thead">
-							{{-- <th rowspan='2'>序号</th>
-							<th rowspan='2'>投标单位</th> --}}
-							<th colspan="2">综合单价(元/吨)</th>
-							{{-- <th rowspan='2'>备注</th> --}}
-						</tr>
-						<tr class="thead">
-							<th>网价基础</th>
-							<th>二次报价</th>
-						</tr>
+						<thead>
+							<tr class="thead">
+								{{-- <th rowspan='2'>序号</th>
+								<th rowspan='2'>投标单位</th> --}}
+								<th colspan="2">综合单价(元/吨)</th>
+								{{-- <th rowspan='2'>备注</th> --}}
+							</tr>
+							<tr class="thead">
+								<th>网价基础</th>
+								<th>二次报价</th>
+							</tr>
+						</thead>
 						@foreach ($qp as $kq=>$qitem)
 						<tr>
 
@@ -964,17 +1042,19 @@
 					@else
 					<!-- 分品牌比价 -->
 					<table class="table table-bordered" width="100%" cellpadding="1" cellspacing="1" border="1">
-						<tr class="thead">
-							<th rowspan="2">品牌</th>
-							{{-- <th rowspan="2">品名</th>  --}}
-							<th colspan='1'>综合单价(元/吨)</th>
-							<th rowspan="2">备注</th>
-						</tr>
-						<tr class="thead">
-							{{-- <th>网价基础</th> --}}
-							<th>二次报价</th>
-							{{-- <th>二次议价</th> --}}
-						</tr>
+						<thead>
+							<tr class="thead">
+								<th rowspan="2">品牌</th>
+								{{-- <th rowspan="2">品名</th>  --}}
+								<th colspan='1'>综合单价(元/吨)</th>
+								<th rowspan="2">备注</th>
+							</tr>
+							<tr class="thead">
+								{{-- <th>网价基础</th> --}}
+								<th>二次报价</th>
+								{{-- <th>二次议价</th> --}}
+							</tr>
+						</thead>
 						@foreach ($qp as $k=>$v)
 							<tr>
 								<td>{{get_brand_name_by_id($v->brand_id)}}</td>

@@ -1,34 +1,38 @@
 <?php
 
-/*
- * config file for PhpSms
- */
 return [
-
     /*
-     * agent use scheme
+     * The scheme information
      * -------------------------------------------------------------------
-     * Format: 'name' => scheme
      *
-     * The scheme value include:
-     * 1. weight (must be a positive integer)
-     * 2. 'backup' (ignore upper/lower case)
+     * The key-value paris: {name} => {value}
      *
-     * supported agents:
-     * 'Luosimao', 'YunTongXun', 'YunPian', 'SubMail', 'Ucpaas', 'JuHe', 'Alidayu', 'Log'
+     * Examples:
+     * 'Log' => '10 backup'
+     * 'SmsBao' => '100'
+     * 'CustomAgent' => [
+     *     '5 backup',
+     *     'agentClass' => '/Namespace/ClassName'
+     * ]
+     *
+     * Supported agents:
+     * 'Log', 'YunPian', 'YunTongXun', 'SubMail', 'Luosimao',
+     * 'Ucpaas', 'JuHe', 'Alidayu', 'SendCloud', 'SmsBao',
+     * 'Qcloud', 'Aliyun'
+     *
      */
     'scheme' => [
         'Log',
     ],
 
     /*
-     * agents config
+     * The configuration
      * -------------------------------------------------------------------
-     * Note: agent name must be string.
+     *
+     * Expected the name of agent to be a string.
      *
      */
     'agents' => [
-
         /*
          * -----------------------------------
          * YunPian
@@ -39,7 +43,7 @@ return [
          */
         'YunPian' => [
             //用户唯一标识，必须
-            'apikey' => 'your api key',
+            'apikey' => 'your_api_key',
         ],
 
         /*
@@ -51,35 +55,20 @@ return [
          * support template sms.
          */
         'YunTongXun' => [
-            //主帐号,对应开官网发者主账号下的 ACCOUNT SID
-            'accountSid' => 'your account sid',
-
-            //主帐号令牌,对应官网开发者主账号下的 AUTH TOKEN
-            'accountToken' => 'your account token',
-
-            //应用Id，在官网应用列表中点击应用，对应应用详情中的APP ID
-            //在开发调试的时候，可以使用官网自动为您分配的测试Demo的APP ID
-            'appId' => 'your app id',
-
-            //请求地址
-            //沙盒环境（用于应用开发调试）：sandboxapp.cloopen.com
-            //生产环境（用户应用上线使用）：app.cloopen.com
-            'serverIP' => 'app.cloopen.com',
-
-            //请求端口，生产环境和沙盒环境一致
-            'serverPort' => '8883',
-
-            //REST版本号，在官网文档REST介绍中获得。
-            'softVersion' => '2013-12-26',
-
+            //主帐号
+            'accountSid'    => 'your_account_sid',
+            //主帐号令牌
+            'accountToken'  => 'your_account_token',
+            //应用Id
+            'appId'         => 'your_app_id',
+            //请求地址(不加协议前缀)
+            'serverIP'      => 'app.cloopen.com',
+            //请求端口
+            'serverPort'    => '8883',
             //被叫号显
-            'displayNum' => null,
-
-            //语音验证码使用的语言类型
-            'voiceLang' => 'zh',
-
+            'displayNum'    => null,
             //语音验证码播放次数
-            'playTimes' => 3,
+            'playTimes'     => 3,
         ],
 
         /*
@@ -90,9 +79,7 @@ return [
          * support template sms.
          */
         'SubMail' => [
-
-            'appid' => 'your app id',
-
+            'appid'     => 'your_app_id',
             'signature' => 'your app key',
         ],
 
@@ -104,13 +91,8 @@ return [
          * support content sms.
          */
         'Luosimao' => [
-            // 短信 API key
-            // 在管理中心->短信->触发发送下查看
-            'apikey' => 'your api key',
-
-            // 语言验证 API key
-            // 在管理中心->语音->语音验证下查看
-            'voiceApikey' => 'your voice api key',
+            'apikey'        => 'your_api_key',
+            'voiceApikey'   => 'your_voice_api_key',
         ],
 
         /*
@@ -122,14 +104,12 @@ return [
          */
         'Ucpaas' => [
             //主帐号,对应开官网发者主账号下的 ACCOUNT SID
-            'accountSid' => 'your account sid',
-
+            'accountSid'    => 'your_account_sid',
             //主帐号令牌,对应官网开发者主账号下的 AUTH TOKEN
-            'accountToken' => 'your account token',
-
+            'accountToken'  => 'your_account_token',
             //应用Id，在官网应用列表中点击应用，对应应用详情中的APP ID
             //在开发调试的时候，可以使用官网自动为您分配的测试Demo的APP ID
-            'appId' => 'your app id',
+            'appId'         => 'your_app_id',
         ],
 
         /*
@@ -142,8 +122,7 @@ return [
          */
         'JuHe' => [
             //应用App Key
-            'key' => 'your key',
-
+            'key'   => 'your_key',
             //语音验证码播放次数
             'times' => 3,
         ],
@@ -158,19 +137,15 @@ return [
          */
         'Alidayu' => [
             //请求地址
-            'sendUrl' => 'https://eco.taobao.com/router/rest',
-
+            'sendUrl'           => 'http://gw.api.taobao.com/router/rest',
             //淘宝开放平台中，对应阿里大鱼短信应用的App Key
-            'appKey' => 'your app key',
-
+            'appKey'            => 'your_app_key',
             //淘宝开放平台中，对应阿里大鱼短信应用的App Secret
-            'secretKey' => 'your secret key',
-
+            'secretKey'         => 'your_secret_key',
             //短信签名，传入的短信签名必须是在阿里大鱼“管理中心-短信签名管理”中的可用签名
-            'smsFreeSignName' => 'your sms free sign name',
-
+            'smsFreeSignName'   => 'your_sms_free_sign_name',
             //被叫号显(用于语音通知)，传入的显示号码必须是阿里大鱼“管理中心-号码管理”中申请或购买的号码
-            'calledShowNum' => 'your called show num',
+            'calledShowNum'     => null,
         ],
 
         /*
@@ -181,11 +156,50 @@ return [
          * support template sms.
          */
         'SendCloud' => [
-            //SMS_USER
-            'smsUser' => 'your SMS_USER',
+            'smsUser'   => 'your_SMS_USER',
+            'smsKey'    => 'your_SMS_KEY',
+        ],
 
-            //SMS_KEY
-            'smsKey'  => 'your SMS_KEY',
+        /*
+         * -----------------------------------
+         * SmsBao
+         * -----------------------------------
+         * website: http://www.smsbao.com
+         * support content sms.
+         */
+        'SmsBao' => [
+            //注册账号
+            'username'  => 'your_username',
+            //账号密码（明文）
+            'password'  => 'your_password',
+        ],
+
+        /*
+         * -----------------------------------
+         * Qcloud
+         * 腾讯云
+         * -----------------------------------
+         * website:http://www.qcloud.com
+         * support template sms.
+         */
+        'Qcloud' => [
+            'appId'     => 'your_app_id',
+            'appKey'    => 'your_app_key',
+        ],
+
+        /*
+         * -----------------------------------
+         * Aliyun
+         * 阿里云
+         * -----------------------------------
+         * website:https://www.aliyun.com/product/sms
+         * support template sms.
+         */
+        'Aliyun' => [
+            'accessKeyId'       => 'your_access_key_id',
+            'accessKeySecret'   => 'your_access_key_secret',
+            'signName'          => 'your_sms_sign_name',
+            'regionId'          => 'cn-shenzhen',
         ],
     ],
 ];

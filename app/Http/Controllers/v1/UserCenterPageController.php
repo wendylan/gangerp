@@ -23,6 +23,13 @@ class UserCenterPageController extends DataProjectController{
     public function init(){
         $projectArr = parent::getUserProject();
         $orderArr = $this->order->getUserOrder(Auth::id())->toArray();
+        foreach ($orderArr as $key => $value) {
+            foreach ($projectArr as $index => $val) {
+                if($value['project_id'] == $val['project_info_id']){
+                    $orderArr[$key]['projectInfo'] = $val;
+                }
+            }
+        }
         return $this->responseBuild(['projectDatas'=>$projectArr?$projectArr:'该账户没有任何可选项目', 'orderDatas'=>$orderArr]);
     }
 
@@ -46,6 +53,7 @@ class UserCenterPageController extends DataProjectController{
     public function changesProjectContact(Request $Request){
         $result = parent::changesContact($Request->input('projectId'), $Request->input('targetId'));
         if($result){
+            $projectId = DataProject::find($Request->input('projectId'))->get();
             return array('data'=>parent::getUserProject(),'message'=>'success','status_code'=>200);
         }else{
             return $this->response->error('操作无效', 500);

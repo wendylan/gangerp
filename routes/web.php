@@ -65,15 +65,7 @@ Route::group(['middleware' => ['role:前台数据管理员']], function () {
     });
 });
 
-// 新数据产品
-    // 网价
-	Route::get('/webprice', 'v1\WebPricePageController@getLastDayWebDatas');
-	// 现货价
-	Route::get('/mainprice', 'v1\MainPricePageController@getLastMainDatas');
-	// 下单管理
-	Route::get('/userdeal', 'v1\UserDealPageController@getLastPriceDatas');
-    // 用户中心
-    Route::get('/usercenter', 'v1\UserCenterPageController@index');
+
 
 
 //投标方
@@ -100,7 +92,8 @@ Route::group(['middleware' => ['role:tenderee,tender']], function () {
 
 	//zzzz招标方
 	Route::get('tenderee/my', 'BidsController@tenderee_my');
-	Route::get('tenderee/my/{id}', 'BidsController@tenderee_my_bid')->middleware('StageReidrect');
+	// Route::get('tenderee/my/{id}', 'BidsController@tenderee_my_bid')->middleware('StageReidrect');
+	Route::get('tenderee/my/{id}', 'BidsController@tenderee_my_bid');
 	Route::get('tenderee/my/{id}/edit', 'BidsController@tenderee_my_bid_edit');
 	Route::post('tenderee/my/{id}/edit', 'BidsController@tenderee_my_bid_edit_store');
 	Route::post('tenderee/my/{id}/corrections', 'BidsController@tenderee_my_bid_corrections');
@@ -253,28 +246,93 @@ Route::get('/sendsms', 'SmsController@send');
 Route::get('/chat',function(){
 	return view("chat/main");
 });
-//次终端
-Route::get('/secondaryTerminal',function(){
-	return view("SteelData/secondaryTerminal");
-});
-Route::get('/stindex',function(){
-	return view("SteelData/secondaryTerminalIndex");
-});
-Route::get('/purchase',function(){
-	return view("SteelData/secondaryTerminalPurchase");
-});
-Route::get('/ordermanager',function(){
-	return view("SteelData/ordermanager");
-});
+
+// 网价
+Route::get('/webprice', 'v1\WebPricePageController@getLastDayWebDatas')->middleware('checkPermission:网价');
+
 Route::get('/stResource',function(){
 	return view("SteelData/stResource");
+})->middleware('checkPermission:资源推荐');
+
+Route::group(['middleware' => ['role:次终端用户','web']], function () {
+	//次终端
+	Route::get('/secondaryTerminal',function(){
+		return view("SteelData/secondaryTerminal");
+	})->middleware('checkPermission:现货价格指数');
+
+
+	Route::get('/purchase',function(){
+		return view("SteelData/secondaryTerminalPurchase");
+	})->middleware('checkPermission:买买买');
+
+	// Route::get('/ordermanager',function(){
+	// 	return view("SteelData/ordermanager");
+	// });
+
+	Route::get('/agentProject',function(){
+		return view("SteelData/AgentProject");
+	})->middleware('checkPermission:项目管理');
+
+
+	Route::get('/purchaseOrder',function(){
+		return view("SteelData/secondaryTerminalPurchaseOrder");
+	})->middleware('checkPermission:订单管理');
+
+    Route::get('/salesOrder',function(){
+		return view("SteelData/secondaryTerminalSalesOrder");
+	})->middleware('checkPermission:订单管理');
+    
+    Route::get('/dealing_tool', 'v1\DealingToolController@index');
+    
+    Route::get('/form_total', function(){
+        return view("SteelData/FormTotal");
+    });
+
+	Route::get('/stUserOrder',function(){
+		return view("SteelData/stUserOrder");
+	})->middleware('checkPermission:订单管理');
 });
-Route::get('/userOrder',function(){
-	return view("SteelData/secondaryTerminalUserOrder");
+
+Route::group(['middleware' => ['role:运营中心','web']], function () {
+	Route::get('/supplier_order', 'v1\SupplierOrderController@index')->middleware('checkPermission:订单管理');
 });
-Route::get('/agentProject',function(){
-	return view("SteelData/AgentProject");
+
+Route::get('/userdeal', 'v1\UserDealPageController@getLastPriceDatas')->middleware('checkPermission:下单管理');
+Route::group(['middleware' => ['role:终端用户','web']], function () {
+	// 新数据产品
+	// 现货价
+	Route::get('/mainprice', 'v1\MainPricePageController@getLastMainDatas')->middleware('checkPermission:现货价格指数');
+	// 下单管理
+    // 用户中心
+    Route::get('/usercenter', 'v1\UserCenterPageController@index')->middleware('checkPermission:我的订单');
+
+    Route::get('/userprojectmanager',function(){
+		return view("SteelData/userprojectmanager");
+	})->middleware('checkPermission:项目管理');
+    // 缺货查询
+    Route::get('/searchproduct', 'v1\SteelAmountPageController@index')->middleware('checkPermission:下单管理');
 });
-Route::get('/salesOrder',function(){
-	return view("SteelData/secondaryTerminalSalesOrder");
+
+Route::get('/userInfo','UserInfoController@getCompanyInfo');
+Route::get('/companyInfo', function(){
+	return view("SteelData/companyInfo");
 });
+Route::get('/passwordModify', function(){
+	return view("SteelData/passwordModify");
+});
+
+Route::post('/msg', ['uses' => 'MessageController@msg']);
+Route::get('/messageList',function(){
+    return view("SteelData/messageList");
+});
+
+
+Route::post('/ggexcel','HomeController@excel');
+
+
+Route::get('/wuliu','wuliuController@index');
+Route::get('/wuliu/cb','wuliuController@cb');
+Route::get('/wuliu/kyt','wuliuController@kyt');
+
+// Route::get('/captcha/{tmp}','CodeController@captcha');
+// Route::post('/regsms','CodeController@regsms');

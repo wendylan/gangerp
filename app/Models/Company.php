@@ -45,6 +45,9 @@ class Company extends Model
 		return array_values($result->toArray());
 	}
 
+	public static function getUserBussinessInfo($id){
+		return Company::where('user_id',$id)->get();
+	}
 	/*
 	|--------------------------------------------------------------------------
 	| RELATIONS

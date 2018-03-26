@@ -29,6 +29,10 @@ $api->version('v1',['middleware' => ['api' , 'isLogin'],'namespace'=>'App\Http\C
         $api->post('/createPriceSource', 'DatasController@createPriceSource')->middleware('apitest:编辑报价');
         $api->post('/editPriceSource', 'DatasController@editPriceSource')->middleware('apitest:编辑报价');
         $api->post('/delPriceSource', 'DatasController@delPriceSource')->middleware('apitest:编辑报价');
+        $api->get('/getAllPriceSource', 'PriceSourceController@getAllPriceSource');
+        $api->post('/delPriceSourceName', 'PriceSourceController@delPriceSourceName');
+        $api->post('/editPriceSourceName', 'PriceSourceController@editPriceSourceName');
+        $api->post('/addPricSourceName', 'PriceSourceController@addPricSourceName');
         // 仓库模块
         $api->post('/createWarehouse', 'DatasController@createWarehouse')->middleware('apitest:编辑报价');
         $api->post('/editWarehouse', 'DatasController@editWarehouse')->middleware('apitest:编辑报价');
@@ -82,7 +86,7 @@ $api->version('v1',['middleware' => ['api' , 'isLogin'],'namespace'=>'App\Http\C
         $api->post('/getProductsData', 'historyDataController@getProductsData');
         $api->get('/getFactorys', 'historyDataController@getFactorys');
 // other
-    $api->get('/getRecordFromDate', 'DatasController@getRecordFromDate');
+    $api->get('/getInitDatasByMarket', 'DatasController@getInitDatasByMarket');
 
 // public
     //
@@ -107,21 +111,59 @@ $api->version('v1',['middleware' => ['api' , 'isLogin'],'namespace'=>'App\Http\C
     $api->get('/getSteelBrandSource', 'GetSteelDataController@getSteelBrandSource');
 
     //订单
+    $api->get('/getUserProject', 'DataProjectController@getUserProject');
+    $api->get('/getPurcharOrder', 'UserOrderController@getPurcharOrder');
     $api->get('/getUserOrder', 'UserOrderController@getUserOrder');
-    $api->get('/getUserProject', 'UserOrderController@getUserProject');
     $api->get('/getOrder', 'UserOrderController@getOrder');
     $api->post('/saveOrder', 'UserOrderController@saveOrder');
+    $api->post('/serviceSaveOrder', 'UserOrderController@serviceSaveOrder');
+    $api->post('/savePlanOrder', 'UserOrderController@savePlanOrder');
     $api->post('/updateOrder', 'UserOrderController@updateOrder');
+    $api->post('/memoryOrder', 'UserOrderController@memoryOrder');
     $api->post('/cancelOrder', 'UserOrderController@cancelOrder');
     $api->post('/finishOrder', 'UserOrderController@finishOrder');
+    $api->post('/sendForReceived', 'UserOrderController@sendForReceived');
+    $api->post('/confirmReceived', 'UserOrderController@confirmReceived');
     $api->post('/resendOrder', 'UserOrderController@resendOrder');
+    $api->post('/sendForPurchar', 'UserOrderController@sendForPurchar');
+    $api->post('/orderPurcharSendService', 'UserOrderController@orderPurcharSendService');
+    $api->post('/orderPurcharSave', 'UserOrderController@orderPurcharSave');
     $api->post('/deleteOrder', 'UserOrderController@deleteOrder');
+    // 订单收货时间
+    $api->get('/receivedTime', 'UserOrderController@receivedTime');
+    $api->get('/getOrderHistoryInfo', 'UserOrderController@getOrderHistoryInfo');
+    $api->post('/getUserCompanyInfo', 'UserOrderController@getUserCompanyInfo');
+		//导出指定订单excle
+	$api->get('/exportExcel/{dateRange}', 'UserOrderController@exportExcel');
+
+    // 物流信息
+    $api->get('/getCarInfo', 'UserCarInfoController@getCarInfo');
+    $api->post('/addCarInfo', 'UserCarInfoController@addCarInfo');
+    $api->post('/editCarInfo', 'UserCarInfoController@editCarInfo');
+    $api->post('/deleteCarInfo', 'UserCarInfoController@deleteCarInfo');
+
+	// 品牌详情
+    $api->get('/getAllBrandSupplier', 'BrandInfoController@getAllBrandSupplier');
+    $api->get('/getBrandInfo', 'BrandInfoController@getBrandInfo');
+    $api->post('/addBrandInfo', 'BrandInfoController@addBrandInfo');
+    $api->post('/editBrandInfo', 'BrandInfoController@editBrandInfo');
+    $api->post('/delBrandInfo', 'BrandInfoController@delBrandInfo');
+
+    //次中端买买买
+    $api->post('/saveStOrder', 'UserOrderController@saveStOrder');
+    $api->get('/getStOrder', 'UserOrderController@getStOrder');
+    $api->get('/getUserStOrder', 'UserOrderController@getUserStOrder');
     //api响应测试
     // $api->get('/responseTest', 'freightsDataController@responseTest');
+    //公司信息
+    $api->get('/getCompanyInfo', 'UserInfoController@getCompanyInfo');
+    $api->post('/postCompanyInfo', 'UserInfoController@postCompanyInfo');
 
     // 新版本 报价平台 功能路由
     $api->get('/getSoptPriceByDate', 'SoptPricePageController@getSoptPriceByDate');
     $api->get('/getSoptPrice', 'SoptPricePageController@getSoptPrice');
+    $api->get('/getPurchaseSpotPrice', 'SoptPricePageController@getPurchaseSpotPrice');
+    $api->get('/getAllSoptPrice', 'SoptPricePageController@getAllSoptPrice');
 	$api->get('/getOrderPageDefault', 'UserCenterPageController@init');
 
     $api->get('/getFreightByCity', 'freightsDataController@getFreightByCity');
@@ -129,6 +171,7 @@ $api->version('v1',['middleware' => ['api' , 'isLogin'],'namespace'=>'App\Http\C
     $api->get('/getWebPriceByDate', 'GetSteelDataController@getWebPriceByDate');
 
     $api->get('/getBrandSpec', 'PurchasePageController@getBrandSpec');
+    $api->get('/getBrandGroupSpec', 'PurchasePageController@getBrandGroupSpec');
 
 
     $api->get('/getPriceTimesByDate', 'WebPricePageController@getPriceTimesByDate');
@@ -140,15 +183,31 @@ $api->version('v1',['middleware' => ['api' , 'isLogin'],'namespace'=>'App\Http\C
 	$api->get('/getPriceDatasByDate', 'UserDealPageController@getPriceDatasByDate');
 	$api->get('/changesProjectContact', 'UserCenterPageController@changesProjectContact');
 	$api->get('/cancelProjectContact', 'UserCenterPageController@cancelProjectContact');
-	$api->get('/getUserProjectDatas', function(){
-		$projects = (new DataProjectController)->getUserProject() ? (new DataProjectController)->getUserProject() : [];
-		$companys = Company::select('user_id', 'name')->get()->toArray();
-		return array('data'=>['projects'=>$projects, 'companys'=>$companys],'message'=>'success','status_code'=>200);
+	$api->get('/getUserProjectDatas', 'DataProjectController@getUserProjectAndCompanyList');
+	$api->get('/getBrandsElseName', function(App\Models\Steel_factory $Steel_factory){
+		return array('data'=>['nameList'=>$Steel_factory::all()],'message'=>'success','status_code'=>200);
 	});
 
     $api->get('/getAllProduct', 'ResourcesPageController@getAllProduct');
-
+    $api->get('/getResourceAnalysis', 'ResourcesPageController@getResourceAnalysis');
     $api->get('/getResourceInfo', 'ResourcesPageController@getResourceInfo');
     $api->get('/getPriceGroupByBrand', 'ResourcesPageController@getPriceGroupByBrand');
-    $api->get('/getResourceAnalysis', 'ResourcesPageController@getResourceAnalysis');
+
+
+    $api->get('/getUserInfo', 'UserInfoController@getUserInfo');
+    $api->post('/modifyPassword', 'UserInfoController@modifyPassword');
+
+	// admin
+    # 报价相关
+	$api->get('/getInitDatas', 'DataMarketPriceController@getInitDatas');
+	$api->get('/getMarketPriceBySteelAndDate', 'DataMarketPriceController@getMarketPriceBySteelAndDate');
+    $api->post('/saveMarketPriceDatas', 'DataMarketPriceController@add');
+    $api->get('/getMarketPriceStateByBrand', 'MarketDataHandleController@getMarketPriceStateByBrand');
+    $api->get('/getRuleByBrand', 'DataMarketPriceController@getRuleByBrand');
+    $api->post('/editMarketRule', 'MarketDataHandleController@edit');
+    $api->post('/changsMarketPriceState', 'MarketDataHandleController@changeState');
+
+    //sql handle
+    $api->get('/setMarketPriceRule', 'sqlController@setMarketRule');
+
 });

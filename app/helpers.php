@@ -77,7 +77,8 @@ function get_project_name_by_id($id){
 
 function get_company_name_by_uid($uid){
     $user=user::find($uid);
-    $cid=$user->company_id;
+    // $cid=$user->company_id;
+    $cid=empty($user->company_id)?'6':$user->company_id;
     $retVal = (empty($uid)) ? 0 : DB::table('company')->select('name')->where('id', $cid)->first();
     $result=(!$retVal) ? 0 : $retVal->name;
     return $result;
@@ -121,7 +122,7 @@ function get_company_users_by_companyid($cid){
 
 function get_company_projects($cid){
     $cuids=get_company_users_by_companyid($cid);
-    $retVal = (empty($cuids)) ? 0 : DB::table('project')->whereIn('user_id', $cuids)->orderBy('created_at', 'desc')->get();
+    $retVal = (empty($cuids)) ? array() : DB::table('project')->whereIn('user_id', $cuids)->orderBy('created_at', 'desc')->get();
     // dd($retVal);
     $a_projects=array();
         foreach ($retVal as $key => $value) {
@@ -928,3 +929,31 @@ function is_json($string) {
      }
      
  }
+
+
+ function sys_notify($to_uid,$notify_type){
+        switch ($notify_type) {
+            case 'cg_neworder':
+                $rs=\Illuminate\Support\Facades\Event::fire(new \App\Events\cg_neworderEvent($to_uid));
+                break;
+            case 'cg_resourceOK':
+                $rs=\Illuminate\Support\Facades\Event::fire(new \App\Events\cg_resourceOKEvent($to_uid));
+                break;
+            case 's_neworder':
+                $rs=\Illuminate\Support\Facades\Event::fire(new \App\Events\s_neworderEvent($to_uid));
+                break;
+            case 's_orderConfirm':
+                $rs=\Illuminate\Support\Facades\Event::fire(new \App\Events\s_orderConfirmEvent($to_uid));
+                break;
+            case 'zd_neworder':
+                $rs=\Illuminate\Support\Facades\Event::fire(new \App\Events\zd_neworderEvent($to_uid));
+                break;
+            case 'zd_orderConfirm':
+                $rs=\Illuminate\Support\Facades\Event::fire(new \App\Events\zd_orderConfirmEvent($to_uid));
+                break;
+            case 'zd_orderConfirmOK':
+                $rs=\Illuminate\Support\Facades\Event::fire(new \App\Events\zd_orderConfirmOKEvent($to_uid));
+                break;
+        }
+    
+    } 

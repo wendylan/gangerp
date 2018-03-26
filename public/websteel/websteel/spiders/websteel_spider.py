@@ -56,7 +56,7 @@ class WebsteelSpider(scrapy.Spider):
 
         # 获取本地存储上次的路径数据
         diskWebPathData = []
-        basicPath = json.load(open('/home/wwwroot/www.gangerp.com/public/websteel/websteel/catchData/basePath.json', 'r'))
+        basicPath = json.load(open('/usr/basePath.json', 'r'))
         self.diskWebDataPath = basicPath
         for data in basicPath:
             diskWebPathData.append(data["date"]);
@@ -163,7 +163,7 @@ class WebsteelSpider(scrapy.Spider):
 
         # 更新Basic路径
         self.diskWebDataPath.append(self.newPath)
-        fp = open('/home/wwwroot/www.gangerp.com/public/websteel/websteel/catchData/basePath.json', 'w')
+        fp = open('/usr/basePath.json', 'w')
         fp.write(json.dumps(self.diskWebDataPath))
         fp.close()
 

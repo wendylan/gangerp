@@ -9,20 +9,15 @@ namespace Toplan\PhpSms;
  * @property string $accountToken
  * @property string $appId
  */
-class UcpaasAgent extends Agent
+class UcpaasAgent extends Agent implements TemplateSms, VoiceCode
 {
-    public function sendSms($to, $content, $tempId, array $data)
-    {
-        $this->sendTemplateSms($to, $tempId, $data);
-    }
-
     public function sendTemplateSms($to, $tempId, array $data)
     {
         $response = $this->ucpass()->templateSMS($this->appId, $to, $tempId, implode(',', $data));
         $this->setResult($response);
     }
 
-    public function voiceVerify($to, $code, $tempId, array $data)
+    public function sendVoiceCode($to, $code)
     {
         $response = $this->ucpass()->voiceCode($this->appId, $code, $to);
         $this->result($response);
@@ -30,28 +25,20 @@ class UcpaasAgent extends Agent
 
     protected function ucpass()
     {
-        $config = [
+        return new \Ucpaas([
             'accountsid' => $this->accountSid,
             'token'      => $this->accountToken,
-        ];
-
-        return new \Ucpaas($config);
+        ]);
     }
 
     protected function setResult($result)
     {
         $result = json_decode($result);
         if (!$result) {
-            $this->result(Agent::INFO, '请求失败');
-
-            return;
+            return $this->result(Agent::INFO, 'request failed');
         }
         $this->result(Agent::SUCCESS, $result->resp->respCode === '000000');
         $this->result(Agent::CODE, $result->resp->respCode);
         $this->result(Agent::INFO, json_encode($result->resp));
-    }
-
-    public function sendContentSms($to, $content)
-    {
     }
 }

@@ -599,16 +599,16 @@
 
 
 <script>
-	setLeftBar("新建招标");
-	setPageTitle("批次招标");
-	setOptionFocus("批次招标");
+	// setLeftBar("新建招标");
+	// setPageTitle("批次招标");
+	// setOptionFocus("批次招标");
 	$('.collapse').collapse();
 
 
 	jeDate({
 	    dateCell:".time-select",
 	    format:"YYYY-MM-DD hh:mm:ss",
-	    isTime:true, 
+	    isTime:true,
 	    minDate:"2014-09-19 00:00",
 	    isToday:true
 	});

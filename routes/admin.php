@@ -12,3 +12,8 @@ Route::group(['middleware' => ['role:后台数据录入']], function () {
 
 });
 //    Route::get('/steelspec/test', function (){echo "aaaaaaaaa";});
+
+
+// Route::get('/user', 'AdminUserController@test');
+
+CRUD::resource('user', 'AdminUserController');

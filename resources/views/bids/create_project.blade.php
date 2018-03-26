@@ -129,7 +129,7 @@
 </style>
 
 <div class="warpper-main project-page">
-	
+
 	<form id="bids-form" role="form" action="/bids" method="POST">
 		<input type="hidden" name="_token" value="{{ csrf_token() }}">
 	<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
@@ -189,7 +189,7 @@
 						</div>
 						<div style="clear:both;"></div>
 					</div>
-	      			
+
 
 					<p class="bg-success">选择您所需要的材料</p>
 					<div class="form-for-4">
@@ -203,7 +203,7 @@
 							<label for="exampleInputEmail1">品牌范围</label>
 							<br>
 							<select id="brands" name="brands[]" class="form-control more-select brand-select" multiple="multiple" >
-									
+
 							</select>
 						</div>
 						<div class="form-group">
@@ -304,7 +304,7 @@
 						<input name="pricetype" type="text" class="form-control" placeholder="" />
 					</div>
 					<div style="clear:both;"></div>
-					
+
 					<div class="form-for-2">
 						<div class="form-group" style="width:100%;">
 							<label for="exampleInputPassword1">结算条件</label>
@@ -437,7 +437,7 @@
 					<div class="form-group select-company">
 						<label style="display:block;">选择指定的公司</label>
 						<select name="companys[]" class="form-control more-select-2" multiple="multiple">
-							
+
 						@foreach ($companys as $cid=>$company)
 								<option value={{$cid}}>{{ $company }}</option>
 						@endforeach
@@ -449,23 +449,23 @@
 		</div>
 	</div>
 
-	
+
 
 	</form>
 </div>
 
-	
+
 
 <script>
-	setLeftBar("新建招标");
-	setPageTitle("项目招标");
-	setOptionFocus("项目招标");
+	// setLeftBar("新建招标");
+	// setPageTitle("项目招标");
+	// setOptionFocus("项目招标");
 	$('.collapse').collapse();
 
 	jeDate({
 	    dateCell:".time-select",
 	    format:"YYYY-MM-DD hh:mm:ss",
-	    isTime:true, 
+	    isTime:true,
 	    minDate:"2014-09-19 00:00",
 	    isToday:true
 	});
@@ -532,7 +532,7 @@
 				$('.more-select').multiselect('rebuild');
 				console.log(optionsArr)
 				$("#brands").multiselect('dataprovider', optionsArr);
-				
+
 				//设置计量方式
 				$("#c_type").val(datas[key].c_type);
 				//设置材料总量
@@ -571,11 +571,11 @@
 					}
 				}
 				$("#project-table-2 tbody :checkbox").labelauty().click();
-				
+
 			}
 		}
 	}
-	
+
 	//初始化jquery-labelauty
 	$(document).ready(function(){
 		$(".warpper-main :checkbox").labelauty();
@@ -704,7 +704,7 @@
 	// 			return false;
 	// 		}
 	// 	}
-		
+
 	// });
 
 </script>
